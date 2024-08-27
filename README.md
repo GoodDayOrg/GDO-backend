@@ -1,4 +1,5 @@
-# Java DropWizard Flyway Starter
+# GoodDayOrg backend application
+### check <a href="https://github.com/GoodDayOrg/GDO-frontend" target="_blank">here</a>, to see frontend.
 
 Database Migration - Local
 ---
