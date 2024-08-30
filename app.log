@@ -1,0 +1,57 @@
+2024-08-28 10:56:41.447 [main] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 6.1.2.Final
+2024-08-28 10:56:41.846 [main] INFO  org.example.controller.JobRoleController - JobController initialized
+2024-08-28 11:00:50.982 [main] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 6.1.2.Final
+2024-08-28 11:00:51.376 [main] INFO  org.example.controller.JobRoleController - JobController initialized
+2024-08-28 12:19:50.158 [dw-52 - GET /api/job-roles] INFO  org.example.controller.JobRoleController - Get all job roles request received
+2024-08-28 13:07:14.093 [main] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 6.1.2.Final
+2024-08-28 13:07:14.585 [main] INFO  org.example.controllers.JobRoleController - JobController initialized
+2024-08-28 13:07:23.655 [dw-41 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:07:24.518 [dw-36 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:07:25.121 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:11:00.271 [dw-36 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:11:05.217 [dw-37 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:11:20.126 [dw-37 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:13:42.780 [dw-54 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:13:43.468 [dw-35 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:13:44.136 [dw-38 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:15:38.180 [dw-35 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:15:38.801 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:15:39.463 [dw-37 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:16:12.000 [dw-36 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:16:12.637 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:16:13.263 [dw-36 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:17:49.222 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:17:49.946 [dw-53 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:17:50.734 [dw-35 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:19:40.372 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:19:54.816 [dw-38 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:19:55.472 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:19:56.155 [dw-38 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:21:02.803 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:21:03.499 [dw-37 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:21:04.167 [dw-39 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:22:10.861 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:22:14.460 [dw-36 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:25:58.183 [dw-60 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:25:58.821 [dw-56 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:25:59.474 [dw-58 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:26:33.413 [dw-38 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:26:34.047 [dw-56 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:26:34.704 [dw-38 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:27:09.371 [dw-39 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:27:10.012 [dw-38 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:27:10.679 [dw-39 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:27:25.101 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:27:25.724 [dw-38 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:27:26.490 [dw-42 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:30:39.993 [dw-60 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:30:40.680 [dw-36 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:30:41.297 [dw-62 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:31:03.036 [dw-58 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:31:03.666 [dw-36 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:31:04.322 [dw-58 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:40:09.811 [main] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 6.1.2.Final
+2024-08-28 13:40:10.307 [main] INFO  org.example.controllers.JobRoleController - JobController initialized
+2024-08-28 13:40:28.694 [dw-41 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:40:32.570 [dw-36 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
+2024-08-28 13:41:26.760 [dw-37 - GET /api/job-roles] INFO  org.example.controllers.JobRoleController - Get all job roles request received
