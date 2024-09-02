@@ -1,17 +1,27 @@
 INSERT INTO capability (capabilityName) VALUES
-    ("Software Development"),
-    ("Data Analysis"),
-    ("Cybersecurity Management"),
-    ("Cloud Infrastructure"),
-    ("DevOps Automation")
+    ("Applied Innovation"),
+    ("Business Development & Marketing"),
+    ("Business Services Support"),
+    ("Cyber Security"),
+    ("Data & AI"),
+    ("Delivery Management"),
+    ("Engineering"),
+    ("Experience Design"),
+    ("Platforms"),
+    ("Pre-Sales"),
+    ("Product & Digital Advisory"),
+    ("Quality Assurance")
 ;
 
 INSERT INTO band (bandName) VALUES
+    ("Apprentice"),
     ("Trainee"),
     ("Associate"),
-    ("Senior"),
+    ("Senior Associate"),
+    ("Consultant"),
+    ("Principal"),
     ("Lead"),
-    ("Principal")
+    ("Manager")
 ;
 
 INSERT INTO status (statusName) VALUES
