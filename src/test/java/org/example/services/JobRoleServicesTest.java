@@ -5,6 +5,7 @@ import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.ResultSetException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleResponse;
+import org.example.models.JobRoleFilteredRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
@@ -35,7 +36,7 @@ class JobRoleServicesTest {
         jobRoles.add(
                 new JobRole(2, "test2", "Belfast", "testCapability2", "testBand2", Date.valueOf("2000-10-11"), "closed")
         );
-        Mockito.when(jobRoleDao.getFilteredJobRoles(jobRoleFilteredRequest)).thenReturn(jobRoles);
+        Mockito.when(jobRoleDao.getAllJobRoles()).thenReturn(jobRoles);
 
         List<JobRoleResponse> expected = new ArrayList<>();
         expected.add(
@@ -46,16 +47,30 @@ class JobRoleServicesTest {
     @Test
     public void getAllJobRoles_WhenDaoReturnsNull_ExpectDoesNotExistExceptionToBeThrown()
             throws DoesNotExistException, SQLException, ResultSetException {
-        Mockito.when(jobRoleDao.getFilteredJobRoles(jobRoleFilteredRequest)).thenReturn(new ArrayList<JobRole>());
-        assertThrows(DoesNotExistException.class, () -> jobRoleService.getAllJobRoles(
-                jobRoleFilteredRequest));
+        Mockito.when(jobRoleDao.getAllJobRoles()).thenReturn(new ArrayList<JobRole>());
+        assertThrows(DoesNotExistException.class, () -> jobRoleService.getAllJobRoles());
     }
 
     @Test
     public void getAllJobRoles_WhenDaoThrowsSQLException_ExpectSQLExceptionToBeThrown()
             throws SQLException, ResultSetException {
-        Mockito.when(jobRoleDao.getFilteredJobRoles(jobRoleFilteredRequest)).thenThrow(SQLException.class);
-        assertThrows(SQLException.class, () -> jobRoleService.getAllJobRoles(
-                jobRoleFilteredRequest));
+        Mockito.when(jobRoleDao.getAllJobRoles()).thenThrow(SQLException.class);
+        assertThrows(SQLException.class, () -> jobRoleService.getAllJobRoles());
     }
+
+
+
+
+
+
+//
+//    @Test
+//    public void getFilteredJobRoles_WhenDaoThrowsSQLException_ExpectSQLExceptionToBeThrown()
+//            throws SQLException, ResultSetException {
+//        Mockito.when(jobRoleDao.getFilteredJobRoles(JobRoleFilteredRequest)).thenThrow(SQLException.class);
+//        assertThrows(SQLException.class, () -> jobRoleService.getAllJobRoles());
+//    }
+
+
+
 }
