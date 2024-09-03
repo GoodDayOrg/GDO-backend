@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.sql.Date;
+import java.util.Objects;
 
 @ApiModel(value = "Job Role Response", description = "Defines mapped JobRole object to pass to other methods")
 public class JobRoleResponse {
@@ -103,5 +104,23 @@ public class JobRoleResponse {
 
     public void setStatus(final String status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JobRoleResponse that = (JobRoleResponse) o;
+        return Objects.equals(roleName, that.roleName)
+                && Objects.equals(jobRoleLocation, that.jobRoleLocation)
+                && Objects.equals(capabilityName, that.capabilityName)
+                && Objects.equals(bandName, that.bandName)
+                && Objects.equals(closingDate, that.closingDate)
+                && Objects.equals(status, that.status);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roleName, jobRoleLocation, capabilityName, bandName, closingDate, status);
     }
 }
