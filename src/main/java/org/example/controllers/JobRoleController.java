@@ -115,6 +115,7 @@ public class JobRoleController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{jobRoleId}")
+    @RolesAllowed({UserRole.ADMIN, UserRole.USER})
     @ApiOperation(
             value = "Returns Job Role details",
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
