@@ -53,7 +53,5 @@ jobs:
             --build-arg DB_HOST=${DB_HOST} \
             --build-arg DB_NAME=${DB_NAME} \
             --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            --cache-to=type=local,dest=/tmp/.buildx-cache \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --push \
             .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
