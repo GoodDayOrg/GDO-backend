@@ -16,6 +16,7 @@ import org.example.daos.AuthDao;
 import org.example.models.JwtToken;
 import org.example.services.AuthService;
 import org.example.utils.JwtUtils;
+import org.example.validators.AuthValidator;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import javax.crypto.SecretKey;
 import org.example.controllers.JobRoleController;
@@ -61,7 +62,7 @@ public class TestApplication extends Application<TestConfiguration> {
 
         environment.jersey()
                 .register(new AuthController(
-                        new AuthService(new AuthDao())));
+                        new AuthService(new AuthDao(), new AuthValidator())));
 
         environment.jersey()
                 .register(new JobRoleController(new JobRoleService(new JobRoleDao())));

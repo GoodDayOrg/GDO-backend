@@ -8,6 +8,7 @@ import org.example.exceptions.Entity;
 import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
 import org.example.models.JobRole;
+import org.example.models.JobRoleApplication;
 import org.example.models.JobRoleDetails;
 import org.example.models.JobRoleFilteredRequest;
 import org.example.models.JobRoleResponse;
@@ -40,12 +41,21 @@ public class JobRoleService {
         return jobRoleDetails;
     }
 
+    public List<JobRoleApplication> getAllUserApplications(final String email)
+            throws SQLException, DoesNotExistException {
+        List<JobRoleApplication> jobRoleApplications = jobRoleDao.getUserJobRoleApplications(email);
+        if (jobRoleApplications.isEmpty()) {
+            throw new DoesNotExistException(Entity.APPLICATION);
+        }
+        return jobRoleApplications;
+    }
+
     public List<JobRoleResponse> getFilteredJobRoles(final JobRoleFilteredRequest jobRoleFilteredRequest)
             throws SQLException, DoesNotExistException, ResultSetException {
         List<JobRoleResponse> jobRoleResponses =
                 JobRoleMapper.toResponse(jobRoleDao.getFilteredJobRoles(jobRoleFilteredRequest));
         if (jobRoleResponses.isEmpty()) {
-            throw new DoesNotExistException(Entity.JOB_ROLE);
+            throw new DoesNotExistException(Entity.USER);
         }
         return jobRoleResponses;
     }

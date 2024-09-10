@@ -2,6 +2,7 @@ package org.example.auth;
 
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.example.models.JwtToken;
 import org.example.models.UserRole;
@@ -24,14 +25,16 @@ public class JwtAuthenticator implements Authenticator<String, JwtToken> {
     public Optional<JwtToken> authenticate(final String token)
             throws AuthenticationException {
         try {
-            Integer roleId = Jwts.parser()
+            Claims claims = Jwts.parser()
                     .setSigningKey(key)
                     .build()
                     .parseSignedClaims(token)
-                    .getPayload()
-                    .get("role_id", Integer.class);
+                    .getPayload();
 
-            JwtToken jwtToken = new JwtToken(new UserRole(roleId));
+            Integer roleId = claims.get("role_id", Integer.class);
+            String userEmail = claims.get("email", String.class);
+
+            JwtToken jwtToken = new JwtToken(new UserRole(roleId), userEmail);
 
             return Optional.of(jwtToken);
         } catch (Exception e) {

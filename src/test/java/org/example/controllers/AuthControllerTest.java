@@ -8,12 +8,14 @@ import org.example.models.LoginRequest;
 import org.example.models.User;
 import org.example.services.AuthService;
 import org.example.utils.JwtUtils;
+import org.example.validators.AuthValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.crypto.SecretKey;
@@ -27,10 +29,12 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {
-    private final String email = "admin";
+    private final String email = "admin@example.com";
     private final String plainTextPassword = "admin";
     @Mock
     private AuthDao authDao;
+    @Mock
+    private AuthValidator authValidator;
     @InjectMocks
     private AuthService authservice;
     private final AuthController authController =
@@ -55,6 +59,7 @@ public class AuthControllerTest {
             throws SQLException, InvalidException {
         // Arrange
         when(authDao.getUser(loginRequest)).thenReturn(testUser);
+        when(authValidator.validateEmail(email)).thenReturn(true);
 
         // Act
         String token = authservice.login(loginRequest);
