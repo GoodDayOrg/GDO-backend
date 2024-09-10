@@ -1,9 +1,7 @@
 package org.example.daos;
 
 import org.example.exceptions.ResultSetException;
-import org.example.models.JobRole;
-import org.example.models.JobRoleDetails;
-import org.example.models.JobRoleApplication;
+import org.example.models.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +15,6 @@ import java.util.List;
 import org.example.exceptions.ResultSetException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleDetails;
-import org.example.models.JobRoleFilteredRequest;
 
 public class JobRoleDao {
     public List<JobRole> getAllJobRoles()
@@ -182,74 +179,104 @@ public class JobRoleDao {
         return null;
     }
 
-    public void importMultipleJobRoles(List<JobRoleDetails> detailedJobRoles)
-            throws SQLException {
+    public void importMultipleJobRoles(List<JobRoleDetailsCSV> detailedJobRoles) throws SQLException {
+        String query = "INSERT INTO job_roles (roleName, location, capabilityId, bandId, closingDate, description, "
+                + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        System.out.println("hgdjhssdhjhjbdsdshjb");
+        try (Connection connection = DatabaseConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-        String query =
-                "INSERT INTO job_roles (roleName, location, capabilityId, bandId, closingDate, description, "
-                        + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            for (JobRoleDetailsCSV jobRole : detailedJobRoles) {
+                System.out.println(jobRole.getStatusId());
+                preparedStatement.setString(1, jobRole.getRoleName());
+                preparedStatement.setString(2, jobRole.getJobRoleLocation());
+                preparedStatement.setInt(3, jobRole.getCapabilityId());
+                preparedStatement.setInt(4, jobRole.getBandId());
+                preparedStatement.setDate(5, jobRole.getClosingDate());
+                preparedStatement.setString(6, jobRole.getDescription());
+                preparedStatement.setString(7, jobRole.getResponsibilities());
+                preparedStatement.setString(8, jobRole.getSharepointUrl());
+                preparedStatement.setInt(9, jobRole.getStatusId());
+                preparedStatement.setInt(10, jobRole.getNumberOfOpenPositions());
 
-        try (Connection connection = DatabaseConnector.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-
-                for (JobRoleDetails jobRole : detailedJobRoles) {
-                    preparedStatement.setString(1, jobRole.getRoleName());
-                    preparedStatement.setString(2, jobRole.getJobRoleLocation());
-                    preparedStatement.setInt(3, getCapabilityIdByName(jobRole.getCapabilityName()));
-                    preparedStatement.setInt(4, getBandIdByName(jobRole.getBandName()));
-                    preparedStatement.setDate(5, jobRole.getClosingDate());
-                    preparedStatement.setString(6, jobRole.getDescription());
-                    preparedStatement.setString(7, jobRole.getResponsibilities());
-                    preparedStatement.setString(8, jobRole.getSharepointUrl());
-                    preparedStatement.setInt(9, getStatusIdByName(jobRole.getStatusName()));
-                    preparedStatement.setInt(10, jobRole.getNumberOfOpenPositions());
-
-                    preparedStatement.addBatch();
-                }
-
-                preparedStatement.executeBatch();
+                preparedStatement.addBatch();
             }
+
+            preparedStatement.executeBatch();
+        }
     }
+
 
     public int getCapabilityIdByName(String name) throws SQLException {
+
         try (Connection connection = DatabaseConnector.getConnection()) {
+
             String query = "SELECT capabilityId FROM capability WHERE capabilityName = ?;";
+
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, name);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            return resultSet.getInt(1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                // Check if there is a result
+                if (resultSet.next()) {
+                    // Retrieve the capabilityId from the result set
+                    return resultSet.getInt("capabilityId");
+                } else {
+                    // Handle the case where no rows were returned
+                    throw new SQLException("No capability found with name: " + name);
+                }
+            }
         }
     }
+
 
     public int getBandIdByName(String name) throws SQLException {
+
+
         try (Connection connection = DatabaseConnector.getConnection()) {
+
             String query = "SELECT bandId FROM band WHERE bandName = ?;";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, name);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            return resultSet.getInt(1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                // Check if there is a result
+                if (resultSet.next()) {
+                    // Retrieve the bandId from the result set
+                    return resultSet.getInt("bandId");
+                } else {
+                    // Handle the case where no rows were returned
+                    throw new SQLException("No band found with name: " + name);
+                }
+            }
         }
     }
+
 
     public int getStatusIdByName(String name) throws SQLException {
         try (Connection connection = DatabaseConnector.getConnection()) {
-            String query = "SELECT statusApplicationId FROM application_status WHERE statusApplicationName = ?;";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            String query = "SELECT statusId FROM status WHERE statusName = ?;";
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, name);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            return resultSet.getInt(1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                // Check if there is a result
+                if (resultSet.next()) {
+                    // Retrieve the statusApplicationId from the result set
+                    return resultSet.getInt("statusId");
+                } else {
+                    // Handle the case where no rows were returned
+                    throw new SQLException("No status found with name: " + name);
+                }
+            }
         }
     }
+
     public List<JobRoleApplication> getUserJobRoleApplications(final String email)
             throws SQLException {
         List<JobRoleApplication> jobRoleApplications = new ArrayList<>();

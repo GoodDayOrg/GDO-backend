@@ -1,24 +1,36 @@
 package org.example.services;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
+
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
-import org.example.models.JobRole;
-import org.example.models.JobRoleApplication;
-import org.example.models.JobRoleDetails;
-import org.example.models.JobRoleFilteredRequest;
-import org.example.models.JobRoleResponse;
+import org.example.models.*;
+import com.opencsv.CSVReader;
 
 public class JobRoleService {
 
     JobRoleDao jobRoleDao;
+    JobRoleMapper jobRoleMapper;
 
-    public JobRoleService(final JobRoleDao jobRoleDao) {
+    public JobRoleService(final JobRoleDao jobRoleDao, final JobRoleMapper jobRoleMapper) {
         this.jobRoleDao = jobRoleDao;
+        this.jobRoleMapper = jobRoleMapper;
     }
 
     public List<JobRole> testConnection() throws SQLException, ResultSetException {
@@ -60,5 +72,38 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
+    public void getJobRolesFromCsv(InputStream inputStream) throws IOException {
+        List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+             CSVReader csvReader = new CSVReaderBuilder(reader)
+                     .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
+                     .build()) {
 
+            String[] line;
+            while ((line = csvReader.readNext()) != null) {
+                String roleName = line[0];
+                String location = line[1];
+                String capability = line[2];
+                String band = line[3];
+                Date closingDate = Date.valueOf("2000-10-20");
+                System.out.println(closingDate);
+                String description = line[5];
+                String responsibilities = line[6];
+                String sharepointUrl = line[7];
+                String statusName = line[8];
+                int openPositions = Integer.parseInt(line[9]);
+                JobRoleDetails jobRoleDetails = new JobRoleDetails(
+                        roleName, location, capability, band, closingDate, statusName, description, responsibilities,
+                        sharepointUrl, openPositions
+
+                );
+                jobRoleDetailsList.add(jobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao));
+                }
+
+
+            jobRoleDao.importMultipleJobRoles(jobRoleDetailsList);
+        } catch (CsvValidationException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

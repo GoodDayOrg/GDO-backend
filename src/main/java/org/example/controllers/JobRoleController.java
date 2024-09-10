@@ -11,6 +11,9 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,15 +27,12 @@ import org.example.models.UserRole;
 import org.example.services.JobRoleService;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.BeanParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.example.models.JobRoleFilteredRequest;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Api("Job Role API")
 @Path("/api/job-roles")
@@ -170,5 +170,20 @@ public class JobRoleController {
             LOGGER.error("Receiving job applications failed due to DoesNotExistException\n" + e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
+    }
+
+    @Path("/import")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadJobRolesCsvFile(@FormDataParam("file") final InputStream fileInputStream) {
+//        String userEmail = jwtToken.getUserEmail();
+
+        try {
+            jobRoleService.getJobRolesFromCsv(fileInputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok().build();
     }
 }
