@@ -21,6 +21,8 @@ import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.ResultSetException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
+import org.example.models.JobRoleDetails;
+import org.example.models.JobRoleDetailsCSV;
 import org.example.models.JobRoleResponse;
 import org.example.models.JwtToken;
 import org.example.models.UserRole;
@@ -160,7 +162,6 @@ public class JobRoleController {
     public Response getUserAllJobApplications(@ApiParam(hidden = true) @Auth final JwtToken token) {
         LOGGER.info("Get all user job applications request received");
         String email = token.getUserEmail();
-        System.out.println(email);
         try {
             return Response.ok().entity(jobRoleService.getAllUserApplications(email)).build();
         } catch (SQLException e) {
@@ -175,15 +176,23 @@ public class JobRoleController {
     @Path("/import")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({UserRole.ADMIN})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @ApiResponses({
+            @ApiResponse(
+                    code = OK,
+                    message = "Job roles import succeed",
+                    response = JobRoleDetailsCSV.class),
+            @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "uploading CSV file failed, SQL Exception"),
+            @ApiResponse(code = NOT_FOUND, message = "uploading CSV file failed, DoesNotExistException")
+    })
     public Response uploadJobRolesCsvFile(@FormDataParam("file") final InputStream fileInputStream) {
-//        String userEmail = jwtToken.getUserEmail();
-
         try {
             jobRoleService.getJobRolesFromCsv(fileInputStream);
+            return Response.ok().build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return Response.ok().build();
+
     }
 }

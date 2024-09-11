@@ -33,7 +33,6 @@ public final class JobRoleMapper {
         );
     }
     public JobRoleDetailsCSV toJobRolesCSV(final JobRoleDetails jobRoleDetails, final JobRoleDao jobRoleDao) throws SQLException {
-        System.out.println(jobRoleDetails.getStatusName());
         return new JobRoleDetailsCSV(
                 jobRoleDetails.getRoleName(),
                 jobRoleDetails.getJobRoleLocation(),

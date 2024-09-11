@@ -183,12 +183,10 @@ public class JobRoleDao {
         String query = "INSERT INTO job_roles (roleName, location, capabilityId, bandId, closingDate, description, "
                 + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        System.out.println("hgdjhssdhjhjbdsdshjb");
         try (Connection connection = DatabaseConnector.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (JobRoleDetailsCSV jobRole : detailedJobRoles) {
-                System.out.println(jobRole.getStatusId());
                 preparedStatement.setString(1, jobRole.getRoleName());
                 preparedStatement.setString(2, jobRole.getJobRoleLocation());
                 preparedStatement.setInt(3, jobRole.getCapabilityId());
@@ -219,12 +217,9 @@ public class JobRoleDao {
             preparedStatement.setString(1, name);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                // Check if there is a result
                 if (resultSet.next()) {
-                    // Retrieve the capabilityId from the result set
                     return resultSet.getInt("capabilityId");
                 } else {
-                    // Handle the case where no rows were returned
                     throw new SQLException("No capability found with name: " + name);
                 }
             }
@@ -243,12 +238,9 @@ public class JobRoleDao {
             preparedStatement.setString(1, name);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                // Check if there is a result
                 if (resultSet.next()) {
-                    // Retrieve the bandId from the result set
                     return resultSet.getInt("bandId");
                 } else {
-                    // Handle the case where no rows were returned
                     throw new SQLException("No band found with name: " + name);
                 }
             }
@@ -265,12 +257,9 @@ public class JobRoleDao {
             preparedStatement.setString(1, name);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                // Check if there is a result
                 if (resultSet.next()) {
-                    // Retrieve the statusApplicationId from the result set
                     return resultSet.getInt("statusId");
                 } else {
-                    // Handle the case where no rows were returned
                     throw new SQLException("No status found with name: " + name);
                 }
             }
@@ -290,10 +279,7 @@ public class JobRoleDao {
                     + "INNER JOIN job_roles jr ON ja.jobRoleId = jr.jobRoleId\n"
                     + "INNER JOIN User u ON ja.Email = u.Email\n"
                     + "WHERE u.Email = '" + email + "';";
-            System.out.println(query);
-            ResultSet resultSet = statement.executeQuery(
-                    query
-            );
+            ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
                 JobRoleApplication jobRoleApplication = new JobRoleApplication(
