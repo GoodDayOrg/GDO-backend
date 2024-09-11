@@ -2,13 +2,16 @@ package org.example.services;
 
 import java.sql.SQLException;
 import java.util.List;
+import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
+import org.example.exceptions.IllegalStatusException;
 import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
+import org.example.models.JobRoleApplicationResponse;
 import org.example.models.JobRoleDetails;
 import org.example.models.JobRoleFilteredRequest;
 import org.example.models.JobRoleResponse;
@@ -16,9 +19,11 @@ import org.example.models.JobRoleResponse;
 public class JobRoleService {
 
     JobRoleDao jobRoleDao;
+    JobApplicationDao jobApplicationDao;
 
-    public JobRoleService(final JobRoleDao jobRoleDao) {
+    public JobRoleService(final JobRoleDao jobRoleDao, final JobApplicationDao jobApplicationDao) {
         this.jobRoleDao = jobRoleDao;
+        this.jobApplicationDao = jobApplicationDao;
     }
 
     public List<JobRole> testConnection() throws SQLException, ResultSetException {
@@ -58,5 +63,26 @@ public class JobRoleService {
             throw new DoesNotExistException(Entity.USER);
         }
         return jobRoleResponses;
+    }
+
+    public List<JobRoleApplicationResponse> getJobApplicationsById(final int roleId)
+            throws SQLException, DoesNotExistException {
+        List<JobRoleApplicationResponse> jobRoleApplicationResponses = jobApplicationDao.getJobApplicationsById(roleId);
+        if (jobRoleApplicationResponses.isEmpty()) {
+            throw new DoesNotExistException(Entity.APPLICATION);
+        }
+        return jobRoleApplicationResponses;
+    }
+
+    public void changeApplicationStatus(final int roleId, final String userEmail, final String status)
+            throws SQLException, DoesNotExistException, IllegalStatusException {
+        int statusId = jobApplicationDao.getStatusId(status);
+        if (statusId == 0) {
+            throw new IllegalStatusException(status + "not a valid status");
+        }
+        if (!jobApplicationDao.existsByIdAndEmail(roleId, userEmail)) {
+            throw new DoesNotExistException(Entity.APPLICATION);
+        }
+        jobApplicationDao.changeStatus(roleId, userEmail, statusId);
     }
 }
