@@ -3,6 +3,7 @@ package org.example.models;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.sql.Date;
+import java.util.Objects;
 
 public class JobRoleDetailsCSV {
 
@@ -161,5 +162,33 @@ public class JobRoleDetailsCSV {
 
     public void setNumberOfOpenPositions(int numberOfOpenPositions) {
         this.numberOfOpenPositions = numberOfOpenPositions;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        JobRoleDetailsCSV that = (JobRoleDetailsCSV) o;
+        return capabilityId == that.capabilityId && bandId == that.bandId &&
+                statusId == that.statusId &&
+                numberOfOpenPositions == that.numberOfOpenPositions &&
+                Objects.equals(roleName, that.roleName) &&
+                Objects.equals(jobRoleLocation, that.jobRoleLocation) &&
+                Objects.equals(closingDate, that.closingDate) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(responsibilities, that.responsibilities) &&
+                Objects.equals(sharepointUrl, that.sharepointUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roleName, jobRoleLocation, capabilityId, bandId,
+                closingDate, statusId, description, responsibilities,
+                sharepointUrl,
+                numberOfOpenPositions);
     }
 }

@@ -166,28 +166,23 @@ class JobRoleServiceTest {
     }
 
     @Test
-    public void testGetJobRolesFromCsv_savesToDatabase() throws Exception, FileTooBigException, InvalidFileTypeException, FileNeededException {
-        String csvData = "RoleName;Location;Capability;Band;2024-09-30;Description;Responsibilities;SharepointUrl;StatusName;5\n";
-        InputStream inputStream = new ByteArrayInputStream(csvData.getBytes());
-        String fileName = "test.csv";
+    public void getJobRolesFromCsv_MapperShouldConvertFileToCSVModel() throws Exception, FileTooBigException, InvalidFileTypeException, FileNeededException {
 
         JobRoleDetails jobRoleDetails = new JobRoleDetails(
                 "RoleName", "Location", "Capability", "Band", Date.valueOf("2024-09-30"),
                 "StatusName", "Description", "Responsibilities", "SharepointUrl", 5
         );
-        JobRoleDetailsCSV jobRoleDetailsCSV = new JobRoleDetailsCSV("RoleName", "Location", 1,
-                1, Date.valueOf("2024-09-30"), "Description", "Responsibilities",
-                "SharepointUrl", 1, 1);
 
         when(jobRoleDao.getCapabilityIdByName("Capability")).thenReturn(1);
         when(jobRoleDao.getBandIdByName("Band")).thenReturn(1);
         when(jobRoleDao.getStatusIdByName("StatusName")).thenReturn(1);
-        when(JobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao)).thenReturn(jobRoleDetailsCSV);
 
-        jobRoleService.getJobRolesFromCsv(inputStream, fileName);
+        JobRoleDetailsCSV resultJobRoleDetailsCSV = JobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao);
 
-        List<JobRoleDetailsCSV> expectedList = new ArrayList<>();
-        expectedList.add(jobRoleDetailsCSV);
-        verify(jobRoleDao).importMultipleJobRoles(expectedList);
+        JobRoleDetailsCSV expectedJobRoleDetailsCSV = new JobRoleDetailsCSV("RoleName", "Location", 1,
+                1, Date.valueOf("2024-09-30"), "Description", "Responsibilities",
+                "SharepointUrl", 1, 5);
+
+        assertEquals(expectedJobRoleDetailsCSV, resultJobRoleDetailsCSV);
     }
 }
