@@ -18,6 +18,7 @@ import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.ResultSetException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
+import org.example.models.JobRoleApplicationResponse;
 import org.example.models.JobRoleResponse;
 import org.example.models.JwtToken;
 import org.example.models.UserRole;
@@ -169,6 +170,34 @@ public class JobRoleController {
         } catch (DoesNotExistException e) {
             LOGGER.error("Receiving job applications failed due to DoesNotExistException\n" + e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/applications/{id}")
+    @RolesAllowed({UserRole.ADMIN})
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Returns a list of applications for given role",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = JobRoleApplicationResponse.class,
+            responseContainer = "List",
+            produces = "application/json")
+    @ApiResponses({
+            @ApiResponse(
+                    code = OK,
+                    message = "Applications listed successfully",
+                    response = JobRoleApplicationResponse.class),
+            @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getApplicationsForRole failed, SQL Exception"),
+            @ApiResponse(code = NOT_FOUND, message = "getApplicationsForRole failed, DoesNotExistException")
+    })
+    public Response getApplicationsForRole(@PathParam("id") final int roleId) {
+        try {
+            LOGGER.info("received getApplicationsForRole request with id: " + roleId);
+            return Response.ok().entity(jobRoleService.getJobApplicationsById(roleId)).build();
+        } catch (SQLException e) {
+            LOGGER.error("Receiving applications for role with id: " + roleId + "due to SQLException\n" + e.getMessage());
+            return Response.serverError().build();
         }
     }
 }

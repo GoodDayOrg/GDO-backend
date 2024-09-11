@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.ResultSetException;
@@ -29,7 +31,8 @@ import org.mockito.Mockito;
 class JobRoleServiceTest {
     List<JobRole> jobRoles;
     JobRoleDao jobRoleDao = Mockito.mock(JobRoleDao.class);
-    JobRoleService jobRoleService = new JobRoleService(jobRoleDao);
+    JobApplicationDao jobApplicationDao = Mockito.mock(JobApplicationDao.class);
+    JobRoleService jobRoleService = new JobRoleService(jobRoleDao, jobApplicationDao);
 
     @BeforeEach
     public void jobRolesListClean() {
