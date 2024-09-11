@@ -58,16 +58,16 @@ public class JobApplicationDao {
 
     public void changeStatus(final int roleId, final String userEmail, final int statusId)
             throws SQLException, DoesNotExistException {
-        final int STATUS_INDEX = 1;
-        final int ROLE_ID_INDEX = 2;
-        final int EMAIL_INDEX = 3;
+        final int statusIndex = 1;
+        final int roleIdIndex = 2;
+        final int emailIndex = 3;
 
         try (Connection connection = DatabaseConnector.getConnection()) {
             String query = "UPDATE job_application SET statusApplicationId = ? WHERE jobRoleId = ? AND Email = ?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(STATUS_INDEX, statusId);
-            statement.setInt(ROLE_ID_INDEX, roleId);
-            statement.setString(EMAIL_INDEX, userEmail);
+            statement.setInt(statusIndex, statusId);
+            statement.setInt(roleIdIndex, roleId);
+            statement.setString(emailIndex, userEmail);
             int rowsUpdated = statement.executeUpdate();
 
             if (rowsUpdated == 0) {
