@@ -104,7 +104,8 @@ public class JobRoleService {
                         sharepointUrl, openPositions
                 );
 
-                jobRoleDetailsList.add(jobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao));
+                jobRoleDetailsList.add(
+                        JobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao));
             }
             jobRoleDao.importMultipleJobRoles(jobRoleDetailsList);
 

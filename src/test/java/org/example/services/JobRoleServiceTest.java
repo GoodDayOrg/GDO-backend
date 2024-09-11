@@ -164,31 +164,28 @@ class JobRoleServiceTest {
         assertThrows(
                 DoesNotExistException.class, () -> jobRoleService.getAllUserApplications(email));
     }
+
     @Test
     public void testGetJobRolesFromCsv_savesToDatabase() throws Exception, FileTooBigException, InvalidFileTypeException, FileNeededException {
-        // Przygotuj dane wejściowe (przykładowy plik CSV)
         String csvData = "RoleName;Location;Capability;Band;2024-09-30;Description;Responsibilities;SharepointUrl;StatusName;5\n";
         InputStream inputStream = new ByteArrayInputStream(csvData.getBytes());
         String fileName = "test.csv";
 
-        // Przygotuj obiekt, który powinien być zapisywany do bazy danych
         JobRoleDetails jobRoleDetails = new JobRoleDetails(
                 "RoleName", "Location", "Capability", "Band", Date.valueOf("2024-09-30"),
                 "StatusName", "Description", "Responsibilities", "SharepointUrl", 5
         );
-        JobRoleDetailsCSV jobRoleDetailsCSV = new JobRoleDetailsCSV("Rolename", "Location", 1,
-                1, Date.valueOf("2024-09-30"), "description", "testResponsibility",
-                "url", 1, 1); // Wypełnij właściwości obiektu, jeśli to konieczne
+        JobRoleDetailsCSV jobRoleDetailsCSV = new JobRoleDetailsCSV("RoleName", "Location", 1,
+                1, Date.valueOf("2024-09-30"), "Description", "Responsibilities",
+                "SharepointUrl", 1, 1);
 
-        // Mockowanie mappera
+        when(jobRoleDao.getCapabilityIdByName("Capability")).thenReturn(1);
+        when(jobRoleDao.getBandIdByName("Band")).thenReturn(1);
+        when(jobRoleDao.getStatusIdByName("StatusName")).thenReturn(1);
         when(JobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao)).thenReturn(jobRoleDetailsCSV);
 
-        int bandId = jobRoleDao.getBandIdByName(jobRoleDetails.getBandName());
-
-        // Wywołanie metody
         jobRoleService.getJobRolesFromCsv(inputStream, fileName);
 
-        // Weryfikacja, czy metoda importMultipleJobRoles została wywołana z odpowiednimi danymi
         List<JobRoleDetailsCSV> expectedList = new ArrayList<>();
         expectedList.add(jobRoleDetailsCSV);
         verify(jobRoleDao).importMultipleJobRoles(expectedList);

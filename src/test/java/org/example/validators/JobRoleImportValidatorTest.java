@@ -30,9 +30,9 @@ public class JobRoleImportValidatorTest {
 
     @Test
     public void getJobRolesFromCsv_whenFileIsNotCsv_shouldReturnInvalidFileTypeException() {
-        byte[] FileContent = new byte[1];
+        byte[] fileContent = new byte[1];
         String wrongFileExtension = "wrongFile.txt";
         assertThrows(InvalidFileTypeException.class, () -> JobRoleImportValidator.validateCsvFile(
-                FileContent, wrongFileExtension));
+                fileContent, wrongFileExtension));
     }
 }
