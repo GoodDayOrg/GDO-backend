@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class JobRoleImportValidator {
-    private static final long MAX_FILE_SIZE_MB = 5L;
-    private static final long MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+    public static final long MAX_FILE_SIZE_MB = 5L;
+    public static final long MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
     public static void validateCsvFile(final byte[] fileBytes, final String fileDetails)
             throws FileNeededException, FileTooBigException, InvalidFileTypeException {
