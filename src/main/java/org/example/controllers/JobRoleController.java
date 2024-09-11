@@ -237,6 +237,7 @@ public class JobRoleController {
                     " status: " + status);
             jobRoleService.changeApplicationStatus(roleId, userEmail, status);
         } catch (SQLException e) {
+            e.printStackTrace();
             LOGGER.error("Changing application status failed due to SQLException");
             return Response.serverError().build();
         } catch (DoesNotExistException e) {

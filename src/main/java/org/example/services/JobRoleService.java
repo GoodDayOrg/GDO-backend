@@ -77,12 +77,13 @@ public class JobRoleService {
 
     public void changeApplicationStatus(int roleId, String userEmail, String status)
             throws SQLException, DoesNotExistException, IllegalStatusException {
-        if(!jobApplicationDao.getStatusNames().contains(status)){
+        int statusId = jobApplicationDao.getStatusId(status);
+        if(statusId == 0){
             throw new IllegalStatusException(status + "not a valid status");
         }
         if (!jobApplicationDao.existsByIdAndEmail(roleId, userEmail)) {
             throw new DoesNotExistException(Entity.APPLICATION);
         }
-        jobApplicationDao.changeStatus(roleId,userEmail,status);
+        jobApplicationDao.changeStatus(roleId,userEmail,statusId);
     }
 }
