@@ -7,6 +7,7 @@ import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
+import org.example.exceptions.IllegalStatusException;
 import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
 import org.example.models.JobRole;
@@ -65,7 +66,23 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
-    public List<JobRoleApplicationResponse> getJobApplicationsById(final int roleId) throws SQLException {
-        return jobApplicationDao.getJobApplicationsById(roleId);
+    public List<JobRoleApplicationResponse> getJobApplicationsById(final int roleId)
+            throws SQLException, DoesNotExistException {
+        List<JobRoleApplicationResponse> jobRoleApplicationResponses = jobApplicationDao.getJobApplicationsById(roleId);
+        if (jobRoleApplicationResponses.isEmpty()) {
+            throw new DoesNotExistException(Entity.APPLICATION);
+        }
+        return jobRoleApplicationResponses;
+    }
+
+    public void changeApplicationStatus(int roleId, String userEmail, String status)
+            throws SQLException, DoesNotExistException, IllegalStatusException {
+        if(!jobApplicationDao.getStatusNames().contains(status)){
+            throw new IllegalStatusException(status + "not a valid status");
+        }
+        if (!jobApplicationDao.existsByIdAndEmail(roleId, userEmail)) {
+            throw new DoesNotExistException(Entity.APPLICATION);
+        }
+        jobApplicationDao.changeStatus(roleId,userEmail,status);
     }
 }
