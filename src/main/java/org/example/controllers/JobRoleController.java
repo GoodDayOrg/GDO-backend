@@ -176,7 +176,7 @@ public class JobRoleController {
     @Path("/import")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({UserRole.ADMIN})
+//    @RolesAllowed({UserRole.ADMIN})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @ApiOperation(
             value = "Allows to import CSV file",

@@ -79,7 +79,7 @@ public class JobRoleService {
                      .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                      .build()) {
 
-             JobRoleImportValidator.validateCsvFile(inputStream, fileName);
+//             JobRoleImportValidator.validateCsvFile(inputStream, fileName);
 
             String[] line;
             while ((line = csvReader.readNext()) != null) {
@@ -87,8 +87,7 @@ public class JobRoleService {
                 String location = line[1];
                 String capability = line[2];
                 String band = line[3];
-                Date closingDate = Date.valueOf("2000-10-20");
-                System.out.println(closingDate);
+                Date closingDate = Date.valueOf(line[4]);
                 String description = line[5];
                 String responsibilities = line[6];
                 String sharepointUrl = line[7];
