@@ -17,10 +17,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.example.exceptions.DoesNotExistException;
-import org.example.exceptions.FileNeededException;
-import org.example.exceptions.FileTooBigException;
-import org.example.exceptions.ResultSetException;
+import org.example.exceptions.*;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
 import org.example.models.JobRoleDetails;
@@ -36,6 +33,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.example.models.JobRoleFilteredRequest;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Api("Job Role API")
@@ -180,6 +178,11 @@ public class JobRoleController {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({UserRole.ADMIN})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @ApiOperation(
+            value = "Allows to import CSV file",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = JobRoleDetailsCSV.class,
+            produces = "application/json")
     @ApiResponses({
             @ApiResponse(
                     code = OK,
@@ -188,10 +191,12 @@ public class JobRoleController {
             @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "uploading CSV file failed, SQL Exception"),
             @ApiResponse(code = NOT_FOUND, message = "uploading CSV file failed, DoesNotExistException")
     })
-    public Response uploadJobRolesCsvFile(@FormDataParam("file") final InputStream fileInputStream) {
+    public Response uploadJobRolesCsvFile(@FormDataParam("file") final InputStream fileInputStream,
+                                          @FormDataParam("file") final FormDataContentDisposition fileDetails) {
         try {
             LOGGER.info("uploadJobRolesCsvFile request received");
-            jobRoleService.getJobRolesFromCsv(fileInputStream);
+            String fileName = fileDetails.getFileName();
+            jobRoleService.getJobRolesFromCsv(fileInputStream, fileName);
             return Response.ok().build();
         } catch (IOException e) {
             LOGGER.error("Importing CSV File failed\n" + e.getMessage());
@@ -202,8 +207,10 @@ public class JobRoleController {
         } catch (FileTooBigException e) {
             LOGGER.error("Importing CSV File failed, File is too big\n" + e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (InvalidFileTypeException e) {
+            LOGGER.error("Importing CSV File failed, wrong file type\n" + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-
 
     }
 }

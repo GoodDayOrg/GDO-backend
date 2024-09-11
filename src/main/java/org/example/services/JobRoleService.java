@@ -21,6 +21,7 @@ import org.example.mappers.JobRoleMapper;
 import org.example.models.*;
 import com.opencsv.CSVReader;
 import org.example.validators.JobRoleImportValidator;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 public class JobRoleService {
 
@@ -71,14 +72,14 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
-    public void getJobRolesFromCsv(InputStream inputStream) throws IOException, FileNeededException, FileTooBigException {
+    public void getJobRolesFromCsv(InputStream inputStream,  String fileName) throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
         List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
              CSVReader csvReader = new CSVReaderBuilder(reader)
                      .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                      .build()) {
 
-             JobRoleImportValidator.validateCsvFile(inputStream);
+             JobRoleImportValidator.validateCsvFile(inputStream, fileName);
 
             String[] line;
             while ((line = csvReader.readNext()) != null) {
@@ -103,7 +104,7 @@ public class JobRoleService {
 
 
             jobRoleDao.importMultipleJobRoles(jobRoleDetailsList);
-        } catch (CsvValidationException | SQLException e) {
+        } catch (SQLException | CsvValidationException e) {
             throw new RuntimeException(e);
         }
     }

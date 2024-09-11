@@ -1,7 +1,10 @@
 package org.example.validators;
 
+import org.example.exceptions.Entity;
 import org.example.exceptions.FileNeededException;
 import org.example.exceptions.FileTooBigException;
+import org.example.exceptions.InvalidFileTypeException;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,16 +14,19 @@ public class JobRoleImportValidator {
     private static final long MAX_FILE_SIZE_MB = 5L;
     private static final long MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
-    public static void validateCsvFile(final InputStream fileInputStream)
-            throws FileNeededException, FileTooBigException, IOException {
+    public static void validateCsvFile(final InputStream fileInputStream, final String fileDetails)
+            throws FileNeededException, FileTooBigException, IOException, InvalidFileTypeException {
 
         byte[] fileBytes = readInputStream(fileInputStream);
 
         if (fileBytes.length > MAX_FILE_SIZE_BYTES) {
-            throw new FileTooBigException();
+            throw new FileTooBigException(Entity.FILE);
         }
         if (fileBytes.length == 0) {
-            throw new FileNeededException();
+            throw new FileNeededException(Entity.FILE);
+        }
+        if (!fileDetails.toLowerCase().endsWith(".csv")) {
+            throw new InvalidFileTypeException(Entity.FILE);
         }
     }
     private static byte[] readInputStream(InputStream inputStream) throws IOException {
