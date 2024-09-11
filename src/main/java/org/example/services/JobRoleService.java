@@ -16,12 +16,11 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import org.example.daos.JobRoleDao;
-import org.example.exceptions.DoesNotExistException;
-import org.example.exceptions.Entity;
-import org.example.exceptions.ResultSetException;
+import org.example.exceptions.*;
 import org.example.mappers.JobRoleMapper;
 import org.example.models.*;
 import com.opencsv.CSVReader;
+import org.example.validators.JobRoleImportValidator;
 
 public class JobRoleService {
 
@@ -72,12 +71,14 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
-    public void getJobRolesFromCsv(InputStream inputStream) throws IOException {
+    public void getJobRolesFromCsv(InputStream inputStream) throws IOException, FileNeededException, FileTooBigException {
         List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
              CSVReader csvReader = new CSVReaderBuilder(reader)
                      .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                      .build()) {
+
+             JobRoleImportValidator.validateCsvFile(inputStream);
 
             String[] line;
             while ((line = csvReader.readNext()) != null) {

@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.exceptions.DoesNotExistException;
+import org.example.exceptions.FileNeededException;
+import org.example.exceptions.FileTooBigException;
 import org.example.exceptions.ResultSetException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
@@ -188,11 +190,20 @@ public class JobRoleController {
     })
     public Response uploadJobRolesCsvFile(@FormDataParam("file") final InputStream fileInputStream) {
         try {
+            LOGGER.info("uploadJobRolesCsvFile request received");
             jobRoleService.getJobRolesFromCsv(fileInputStream);
             return Response.ok().build();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Importing CSV File failed\n" + e.getMessage());
+            return Response.serverError().build();
+        } catch (FileNeededException e) {
+            LOGGER.error("Importing CSV File failed, no file found\n" + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (FileTooBigException e) {
+            LOGGER.error("Importing CSV File failed, File is too big\n" + e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
+
 
     }
 }
