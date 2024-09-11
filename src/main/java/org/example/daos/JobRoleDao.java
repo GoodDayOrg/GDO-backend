@@ -1,8 +1,6 @@
 package org.example.daos;
 
 import org.example.exceptions.ResultSetException;
-import org.example.models.*;
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -13,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.example.exceptions.ResultSetException;
 import org.example.models.JobRole;
+import org.example.models.JobRoleApplication;
 import org.example.models.JobRoleDetails;
+import org.example.models.JobRoleDetailsCSV;
+import org.example.models.JobRoleFilteredRequest;
 
 public class JobRoleDao {
     public List<JobRole> getAllJobRoles()
@@ -212,7 +212,7 @@ public class JobRoleDao {
         return null;
     }
 
-    public void importMultipleJobRoles(List<JobRoleDetailsCSV> detailedJobRoles) throws SQLException {
+    public void importMultipleJobRoles(final List<JobRoleDetailsCSV> detailedJobRoles) throws SQLException {
         String query = "INSERT INTO job_roles (roleName, location, capabilityId, bandId, closingDate, description, "
                 + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";

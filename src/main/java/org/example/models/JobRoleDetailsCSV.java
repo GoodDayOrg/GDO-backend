@@ -168,7 +168,7 @@ public class JobRoleDetailsCSV {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -176,15 +176,16 @@ public class JobRoleDetailsCSV {
             return false;
         }
         JobRoleDetailsCSV that = (JobRoleDetailsCSV) o;
-        return capabilityId == that.capabilityId && bandId == that.bandId &&
-                statusId == that.statusId &&
-                numberOfOpenPositions == that.numberOfOpenPositions &&
-                Objects.equals(roleName, that.roleName) &&
-                Objects.equals(jobRoleLocation, that.jobRoleLocation) &&
-                Objects.equals(closingDate, that.closingDate) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(responsibilities, that.responsibilities) &&
-                Objects.equals(sharepointUrl, that.sharepointUrl);
+        return capabilityId == that.capabilityId
+                && bandId == that.bandId
+                && statusId == that.statusId
+                && numberOfOpenPositions == that.numberOfOpenPositions
+                && Objects.equals(roleName, that.roleName)
+                && Objects.equals(jobRoleLocation, that.jobRoleLocation)
+                && Objects.equals(closingDate, that.closingDate)
+                && Objects.equals(description, that.description)
+                && Objects.equals(responsibilities, that.responsibilities)
+                && Objects.equals(sharepointUrl, that.sharepointUrl);
     }
 
     @Override

@@ -13,10 +13,20 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import org.example.daos.JobRoleDao;
-import org.example.exceptions.*;
+import org.example.exceptions.DoesNotExistException;
+import org.example.exceptions.Entity;
+import org.example.exceptions.FileNeededException;
+import org.example.exceptions.FileTooBigException;
+import org.example.exceptions.InvalidFileTypeException;
+import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
-import org.example.models.*;
 import com.opencsv.CSVReader;
+import org.example.models.JobRole;
+import org.example.models.JobRoleApplication;
+import org.example.models.JobRoleDetails;
+import org.example.models.JobRoleDetailsCSV;
+import org.example.models.JobRoleFilteredRequest;
+import org.example.models.JobRoleResponse;
 import org.example.validators.JobRoleImportValidator;
 
 public class JobRoleService {
@@ -29,11 +39,13 @@ public class JobRoleService {
         this.jobRoleMapper = jobRoleMapper;
     }
 
-    public List<JobRole> testConnection() throws SQLException, ResultSetException {
+    public List<JobRole> testConnection() throws SQLException,
+            ResultSetException {
         return jobRoleDao.getAllJobRoles();
     }
 
-    public List<JobRoleResponse> getAllJobRoles() throws SQLException, DoesNotExistException, ResultSetException {
+    public List<JobRoleResponse> getAllJobRoles() throws SQLException,
+            DoesNotExistException, ResultSetException {
         List<JobRoleResponse> jobRoleResponses = JobRoleMapper.toResponse(jobRoleDao.getAllJobRoles());
         if (jobRoleResponses.isEmpty()) {
             throw new DoesNotExistException(Entity.JOB_ROLE);
@@ -68,7 +80,8 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
-    public void getJobRolesFromCsv(final InputStream inputStream, final String fileName) throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
+    public void getJobRolesFromCsv(final InputStream inputStream, final String fileName) throws IOException,
+            FileNeededException, FileTooBigException, InvalidFileTypeException {
         List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
 
         byte[] fileBytes = JobRoleImportValidator.readInputStream(inputStream);

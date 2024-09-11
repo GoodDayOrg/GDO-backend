@@ -27,7 +27,7 @@ public class JobRoleImportValidator {
         }
     }
 
-    public static byte[] readInputStream(InputStream inputStream) throws IOException {
+    public static byte[] readInputStream(final InputStream inputStream) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         byte[] data = new byte[4096];
 
