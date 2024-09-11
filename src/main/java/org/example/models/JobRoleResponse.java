@@ -2,8 +2,8 @@ package org.example.models;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 @ApiModel(value = "Job Role Response", description = "Defines mapped JobRole object to pass to other methods")
@@ -11,40 +11,22 @@ public class JobRoleResponse {
     @ApiModelProperty(value = "unique JobRole id")
     private int jobRoleId;
 
-    @ApiModelProperty(
-            value = "Job role's name",
-            required = true,
-            example = "Delivery manager")
+    @ApiModelProperty(value = "Job role's name", required = true, example = "Delivery manager")
     private String roleName;
 
-    @ApiModelProperty(
-            value = "Role's location, defined by ENUM value",
-            required = true,
-            example = "Gdansk")
+    @ApiModelProperty(value = "Role's location, defined by ENUM value", required = true, example = "Gdansk")
     private String jobRoleLocation;
 
-    @ApiModelProperty(
-            value = "Capability's name",
-            required = true,
-            example = "Digital Service")
+    @ApiModelProperty(value = "Capability's name", required = true, example = "Digital Service")
     private String capabilityName;
 
-    @ApiModelProperty(
-            value = "Band's name",
-            required = true,
-            example = "Trainee")
+    @ApiModelProperty(value = "Band's name", required = true, example = "Trainee")
     private String bandName;
 
-    @ApiModelProperty(
-            value = "Expire date of offer",
-            required = true,
-            example = "11/12/2024")
+    @ApiModelProperty(value = "Expire date of offer", required = true, example = "11/12/2024")
     private Date closingDate;
 
-    @ApiModelProperty(
-            value = "Open or Closed",
-            required = true,
-            example = "open")
+    @ApiModelProperty(value = "Open or Closed", required = true, example = "open")
     private String statusName;
 
     public JobRoleResponse(
@@ -104,8 +86,12 @@ public class JobRoleResponse {
         this.bandName = bandName;
     }
 
-    public Date getClosingDate() {
-        return closingDate;
+    public String getClosingDate() {
+        if (closingDate != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return sdf.format(closingDate);
+        }
+        return null;
     }
 
     public void setClosingDate(final Date closingDate) {
@@ -129,17 +115,17 @@ public class JobRoleResponse {
             return false;
         }
         JobRoleResponse that = (JobRoleResponse) o;
-        return jobRoleId == that.jobRoleId && Objects.equals(roleName,
-                that.roleName) && Objects.equals(jobRoleLocation,
-                that.jobRoleLocation) && Objects.equals(capabilityName,
-                that.capabilityName) && Objects.equals(bandName, that.bandName)
+        return jobRoleId == that.jobRoleId
+                && Objects.equals(roleName, that.roleName)
+                && Objects.equals(jobRoleLocation, that.jobRoleLocation)
+                && Objects.equals(capabilityName, that.capabilityName)
+                && Objects.equals(bandName, that.bandName)
                 && Objects.equals(closingDate, that.closingDate)
                 && Objects.equals(statusName, that.statusName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(jobRoleId, roleName, jobRoleLocation,
-                capabilityName, bandName, closingDate, statusName);
+        return Objects.hash(jobRoleId, roleName, jobRoleLocation, capabilityName, bandName, closingDate, statusName);
     }
 }

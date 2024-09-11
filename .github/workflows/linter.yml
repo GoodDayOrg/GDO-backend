@@ -12,7 +12,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "**" ]
 
 jobs:
   build:
@@ -29,4 +29,3 @@ jobs:
           cache: maven
       - name: Run checkstyle
         run: mvn checkstyle:check
-
