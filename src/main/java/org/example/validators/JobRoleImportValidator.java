@@ -14,10 +14,8 @@ public class JobRoleImportValidator {
     private static final long MAX_FILE_SIZE_MB = 5L;
     private static final long MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
-    public static void validateCsvFile(final InputStream fileInputStream, final String fileDetails)
-            throws FileNeededException, FileTooBigException, IOException, InvalidFileTypeException {
-
-        byte[] fileBytes = readInputStream(fileInputStream);
+    public static void validateCsvFile(final byte[] fileBytes, final String fileDetails)
+            throws FileNeededException, FileTooBigException, InvalidFileTypeException {
 
         if (fileBytes.length > MAX_FILE_SIZE_BYTES) {
             throw new FileTooBigException(Entity.FILE);
@@ -29,7 +27,8 @@ public class JobRoleImportValidator {
             throw new InvalidFileTypeException(Entity.FILE);
         }
     }
-    private static byte[] readInputStream(InputStream inputStream) throws IOException {
+
+    public static byte[] readInputStream(InputStream inputStream) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         byte[] data = new byte[4096];
 

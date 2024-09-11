@@ -1,6 +1,7 @@
 package org.example.services;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -74,12 +75,16 @@ public class JobRoleService {
 
     public void getJobRolesFromCsv(InputStream inputStream,  String fileName) throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
         List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+        byte[] fileBytes = JobRoleImportValidator.readInputStream(inputStream);
+
+        JobRoleImportValidator.validateCsvFile(fileBytes, fileName);
+
+        try (InputStream byteArrayInputStream = new ByteArrayInputStream(fileBytes);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
              CSVReader csvReader = new CSVReaderBuilder(reader)
                      .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                      .build()) {
-
-//             JobRoleImportValidator.validateCsvFile(inputStream, fileName);
 
             String[] line;
             while ((line = csvReader.readNext()) != null) {
@@ -93,16 +98,16 @@ public class JobRoleService {
                 String sharepointUrl = line[7];
                 String statusName = line[8];
                 int openPositions = Integer.parseInt(line[9]);
+
                 JobRoleDetails jobRoleDetails = new JobRoleDetails(
                         roleName, location, capability, band, closingDate, statusName, description, responsibilities,
                         sharepointUrl, openPositions
-
                 );
+
                 jobRoleDetailsList.add(jobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao));
-                }
-
-
+            }
             jobRoleDao.importMultipleJobRoles(jobRoleDetailsList);
+
         } catch (SQLException | CsvValidationException e) {
             throw new RuntimeException(e);
         }
