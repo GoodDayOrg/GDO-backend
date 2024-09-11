@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DoesNotExistException;
@@ -23,8 +22,6 @@ import org.example.models.JobRoleDetails;
 import org.example.models.JobRoleFilteredRequest;
 import org.example.models.JobRoleResponse;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mockito;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -140,29 +137,24 @@ class JobRoleServiceTest {
     }
 
     @Test
-    public void getAllUserApplications_shouldReturnJobListForGivenUser()
-            throws SQLException, DoesNotExistException {
+    public void getAllUserApplications_shouldReturnJobListForGivenUser() throws SQLException, DoesNotExistException {
         String email = "admin";
 
         List<JobRoleApplication> expectedJobRoleApplications = new ArrayList<>();
-        expectedJobRoleApplications.add(
-                new JobRoleApplication(1, "Engineer", "hired")
-        );
-        expectedJobRoleApplications.add(
-                new JobRoleApplication(2, "Trainee", "rejected")
-        );
+        expectedJobRoleApplications.add(new JobRoleApplication(1, "Engineer", "hired"));
+        expectedJobRoleApplications.add(new JobRoleApplication(2, "Trainee", "rejected"));
 
         Mockito.when(jobRoleDao.getUserJobRoleApplications(email)).thenReturn(expectedJobRoleApplications);
 
         List<JobRoleApplication> resultJobRoleApplications = jobRoleService.getAllUserApplications(email);
         assertEqualLists(expectedJobRoleApplications, resultJobRoleApplications);
-     }
+    }
 
     @Test
-    public void getAllUserApplication_shouldThrowExpection_whenListIsEmpty() throws DoesNotExistException, SQLException {
+    public void getAllUserApplication_shouldThrowExpection_whenListIsEmpty()
+            throws DoesNotExistException, SQLException {
         String email = "email";
         when(jobRoleDao.getUserJobRoleApplications(email)).thenReturn(Collections.emptyList());
-        assertThrows(
-                DoesNotExistException.class, () -> jobRoleService.getAllUserApplications(email));
+        assertThrows(DoesNotExistException.class, () -> jobRoleService.getAllUserApplications(email));
     }
 }

@@ -2,7 +2,6 @@ package org.example.services;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DoesNotExistException;
@@ -22,7 +21,7 @@ public class JobRoleService {
     JobRoleDao jobRoleDao;
     JobApplicationDao jobApplicationDao;
 
-    public JobRoleService(JobRoleDao jobRoleDao, JobApplicationDao jobApplicationDao) {
+    public JobRoleService(final JobRoleDao jobRoleDao, final JobApplicationDao jobApplicationDao) {
         this.jobRoleDao = jobRoleDao;
         this.jobApplicationDao = jobApplicationDao;
     }
@@ -75,15 +74,15 @@ public class JobRoleService {
         return jobRoleApplicationResponses;
     }
 
-    public void changeApplicationStatus(int roleId, String userEmail, String status)
+    public void changeApplicationStatus(final int roleId, final String userEmail, final String status)
             throws SQLException, DoesNotExistException, IllegalStatusException {
         int statusId = jobApplicationDao.getStatusId(status);
-        if(statusId == 0){
+        if (statusId == 0) {
             throw new IllegalStatusException(status + "not a valid status");
         }
         if (!jobApplicationDao.existsByIdAndEmail(roleId, userEmail)) {
             throw new DoesNotExistException(Entity.APPLICATION);
         }
-        jobApplicationDao.changeStatus(roleId,userEmail,statusId);
+        jobApplicationDao.changeStatus(roleId, userEmail, statusId);
     }
 }

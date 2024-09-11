@@ -1,33 +1,17 @@
 package org.example.controllers;
 
-import io.dropwizard.auth.Auth;
-
 import static org.example.utils.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.example.utils.HttpStatus.NOT_FOUND;
 import static org.example.utils.HttpStatus.OK;
 
+import io.dropwizard.auth.Auth;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
-
 import java.sql.SQLException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.example.exceptions.DoesNotExistException;
-import org.example.exceptions.IllegalStatusException;
-import org.example.exceptions.ResultSetException;
-import org.example.models.JobRole;
-import org.example.models.JobRoleApplication;
-import org.example.models.JobRoleApplicationResponse;
-import org.example.models.JobRoleResponse;
-import org.example.models.JwtToken;
-import org.example.models.UserRole;
-import org.example.services.JobRoleService;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
@@ -39,8 +23,19 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.example.exceptions.DoesNotExistException;
+import org.example.exceptions.IllegalStatusException;
+import org.example.exceptions.ResultSetException;
+import org.example.models.JobRole;
+import org.example.models.JobRoleApplication;
+import org.example.models.JobRoleApplicationResponse;
 import org.example.models.JobRoleFilteredRequest;
+import org.example.models.JobRoleResponse;
+import org.example.models.JwtToken;
+import org.example.models.UserRole;
+import org.example.services.JobRoleService;
 
 @Api("Job Role API")
 @Path("/api/job-roles")
@@ -63,9 +58,9 @@ public class JobRoleController {
             responseContainer = "List",
             produces = "application/json")
     @ApiResponses({
-            @ApiResponse(code = OK, message = "Job roles listed successfully", response = JobRole.class),
-            @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getting all job roles failed due to SQL Exception"),
-            @ApiResponse(code = NOT_FOUND, message = "getting all job roles failed due to DoesNotExistException")
+        @ApiResponse(code = OK, message = "Job roles listed successfully", response = JobRole.class),
+        @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getting all job roles failed due to SQL Exception"),
+        @ApiResponse(code = NOT_FOUND, message = "getting all job roles failed due to DoesNotExistException")
     })
     public Response getAllJobRoles() {
         LOGGER.info("Get all job roles request received");
@@ -94,9 +89,9 @@ public class JobRoleController {
             responseContainer = "Filtered list",
             produces = "application/json")
     @ApiResponses({
-            @ApiResponse(code = OK, message = "Job roles listed successfully", response = JobRole.class),
-            @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getting filtered job roles failed due to SQL exception"),
-            @ApiResponse(code = NOT_FOUND, message = "getting filtered job roles failed due to DoesNotExistException")
+        @ApiResponse(code = OK, message = "Job roles listed successfully", response = JobRole.class),
+        @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getting filtered job roles failed due to SQL exception"),
+        @ApiResponse(code = NOT_FOUND, message = "getting filtered job roles failed due to DoesNotExistException")
     })
     @RolesAllowed({UserRole.ADMIN, UserRole.USER})
     @Path("/filter")
@@ -158,25 +153,29 @@ public class JobRoleController {
             responseContainer = "List",
             produces = "application/json")
     @ApiResponses({
-            @ApiResponse(
-                    code = OK,
-                    message = "User's job applications listed successfully",
-                    response = JobRoleApplication.class),
-            @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getUserAllJobApplications failed, SQL Exception"),
-            @ApiResponse(code = NOT_FOUND, message = "getUserAllJobApplications failed, DoesNotExistException")
+        @ApiResponse(
+                code = OK,
+                message = "User's job applications listed successfully",
+                response = JobRoleApplication.class),
+        @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getUserAllJobApplications failed, SQL Exception"),
+        @ApiResponse(code = NOT_FOUND, message = "getUserAllJobApplications failed, DoesNotExistException")
     })
     public Response getUserAllJobApplications(@ApiParam(hidden = true) @Auth final JwtToken token) {
         LOGGER.info("Get all user job applications request received");
         String email = token.getUserEmail();
         System.out.println(email);
         try {
-            return Response.ok().entity(jobRoleService.getAllUserApplications(email)).build();
+            return Response.ok()
+                    .entity(jobRoleService.getAllUserApplications(email))
+                    .build();
         } catch (SQLException e) {
             LOGGER.error("Receiving job applications failed due to SQLException\n" + e.getMessage());
             return Response.serverError().build();
         } catch (DoesNotExistException e) {
             LOGGER.error("Receiving job applications failed due to DoesNotExistException\n" + e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
@@ -191,25 +190,29 @@ public class JobRoleController {
             responseContainer = "List",
             produces = "application/json")
     @ApiResponses({
-            @ApiResponse(
-                    code = OK,
-                    message = "Applications listed successfully",
-                    response = JobRoleApplicationResponse.class),
-            @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getApplicationsForRole failed, SQL Exception"),
-            @ApiResponse(code = NOT_FOUND, message = "getApplicationsForRole failed, DoesNotExistException")
+        @ApiResponse(
+                code = OK,
+                message = "Applications listed successfully",
+                response = JobRoleApplicationResponse.class),
+        @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getApplicationsForRole failed, SQL Exception"),
+        @ApiResponse(code = NOT_FOUND, message = "getApplicationsForRole failed, DoesNotExistException")
     })
     public Response getApplicationsForRole(@PathParam("id") final int roleId) {
         try {
             LOGGER.info("received getApplicationsForRole request with id: " + roleId);
-            return Response.ok().entity(jobRoleService.getJobApplicationsById(roleId)).build();
+            return Response.ok()
+                    .entity(jobRoleService.getJobApplicationsById(roleId))
+                    .build();
         } catch (SQLException e) {
-            LOGGER.error("Receiving applications for role with id: " + roleId + "failed due to SQLException\n" +
-                    e.getMessage());
+            LOGGER.error("Receiving applications for role with id: " + roleId + "failed due to SQLException\n"
+                    + e.getMessage());
             return Response.serverError().build();
         } catch (DoesNotExistException e) {
-            LOGGER.error("Receiving applications for role with id: " + roleId + "failed. No applications found\n" +
-                    e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            LOGGER.error("Receiving applications for role with id: " + roleId + "failed. No applications found\n"
+                    + e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
@@ -222,19 +225,20 @@ public class JobRoleController {
             authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
             produces = "application/json")
     @ApiResponses({
-            @ApiResponse(
-                    code = OK,
-                    message = "Applications listed successfully",
-                    response = JobRoleApplicationResponse.class),
-            @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getApplicationsForRole failed, SQL Exception"),
-            @ApiResponse(code = NOT_FOUND, message = "getApplicationsForRole failed, DoesNotExistException")
+        @ApiResponse(
+                code = OK,
+                message = "Applications listed successfully",
+                response = JobRoleApplicationResponse.class),
+        @ApiResponse(code = INTERNAL_SERVER_ERROR, message = "getApplicationsForRole failed, SQL Exception"),
+        @ApiResponse(code = NOT_FOUND, message = "getApplicationsForRole failed, DoesNotExistException")
     })
-    public Response changeApplicationStatus(@PathParam("id") final int roleId,
-                                            @QueryParam("userEmail") final String userEmail,
-                                            @QueryParam("status") final String status) {
+    public Response changeApplicationStatus(
+            @PathParam("id") final int roleId,
+            @QueryParam("userEmail") final String userEmail,
+            @QueryParam("status") final String status) {
         try {
-            LOGGER.info("Change application status request received with id: " + roleId + " userEmail: " + userEmail +
-                    " status: " + status);
+            LOGGER.info("Change application status request received with id: " + roleId + " userEmail: " + userEmail
+                    + " status: " + status);
             jobRoleService.changeApplicationStatus(roleId, userEmail, status);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -242,10 +246,14 @@ public class JobRoleController {
             return Response.serverError().build();
         } catch (DoesNotExistException e) {
             LOGGER.error("Changing application status failed: application does not exist");
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
         } catch (IllegalStatusException e) {
             LOGGER.error("Status: " + status + " is not valid");
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
         }
         return Response.ok().entity("Status changed to: " + status).build();
     }
