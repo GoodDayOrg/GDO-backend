@@ -6,13 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
-
-import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
@@ -22,7 +18,6 @@ import org.example.mappers.JobRoleMapper;
 import org.example.models.*;
 import com.opencsv.CSVReader;
 import org.example.validators.JobRoleImportValidator;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 public class JobRoleService {
 
@@ -73,7 +68,7 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
-    public void getJobRolesFromCsv(InputStream inputStream,  String fileName) throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
+    public void getJobRolesFromCsv(final InputStream inputStream, final String fileName) throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
         List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
 
         byte[] fileBytes = JobRoleImportValidator.readInputStream(inputStream);

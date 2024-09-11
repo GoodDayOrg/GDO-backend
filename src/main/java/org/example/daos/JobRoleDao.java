@@ -239,7 +239,7 @@ public class JobRoleDao {
     }
 
 
-    public int getCapabilityIdByName(String name) throws SQLException {
+    public int getCapabilityIdByName(final String name) throws SQLException {
 
         try (Connection connection = DatabaseConnector.getConnection()) {
 
@@ -260,7 +260,7 @@ public class JobRoleDao {
     }
 
 
-    public int getBandIdByName(String name) throws SQLException {
+    public int getBandIdByName(final String name) throws SQLException {
 
 
         try (Connection connection = DatabaseConnector.getConnection()) {
@@ -281,7 +281,7 @@ public class JobRoleDao {
     }
 
 
-    public int getStatusIdByName(String name) throws SQLException {
+    public int getStatusIdByName(final String name) throws SQLException {
         try (Connection connection = DatabaseConnector.getConnection()) {
 
             String query = "SELECT statusId FROM status WHERE statusName = ?;";

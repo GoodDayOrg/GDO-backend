@@ -71,7 +71,10 @@ public class JobRoleDetailsCSV {
     )
     private int numberOfOpenPositions;
 
-    public JobRoleDetailsCSV(String roleName, String jobRoleLocation, int capabilityId, int bandId, Date closingDate, String description, String responsibilities, String sharepointUrl, int statusId, int numberOfOpenPositions) {
+    public JobRoleDetailsCSV(final String roleName, final String jobRoleLocation, final int capabilityId,
+                             final int bandId, final Date closingDate, final String description,
+                             final String responsibilities, final String sharepointUrl, final int statusId,
+                             final int numberOfOpenPositions) {
         this.roleName = roleName;
         this.jobRoleLocation = jobRoleLocation;
         this.capabilityId = capabilityId;
@@ -88,7 +91,7 @@ public class JobRoleDetailsCSV {
         return roleName;
     }
 
-    public void setRoleName(String roleName) {
+    public void setRoleName(final String roleName) {
         this.roleName = roleName;
     }
 
@@ -96,7 +99,7 @@ public class JobRoleDetailsCSV {
         return jobRoleLocation;
     }
 
-    public void setJobRoleLocation(String jobRoleLocation) {
+    public void setJobRoleLocation(final String jobRoleLocation) {
         this.jobRoleLocation = jobRoleLocation;
     }
 
@@ -104,7 +107,7 @@ public class JobRoleDetailsCSV {
         return capabilityId;
     }
 
-    public void setCapabilityId(int capabilityId) {
+    public void setCapabilityId(final int capabilityId) {
         this.capabilityId = capabilityId;
     }
 
@@ -112,7 +115,7 @@ public class JobRoleDetailsCSV {
         return bandId;
     }
 
-    public void setBandId(int bandId) {
+    public void setBandId(final int bandId) {
         this.bandId = bandId;
     }
 
@@ -120,7 +123,7 @@ public class JobRoleDetailsCSV {
         return closingDate;
     }
 
-    public void setClosingDate(Date closingDate) {
+    public void setClosingDate(final Date closingDate) {
         this.closingDate = closingDate;
     }
 
@@ -128,7 +131,7 @@ public class JobRoleDetailsCSV {
         return statusId;
     }
 
-    public void setStatusId(int statusId) {
+    public void setStatusId(final int statusId) {
         this.statusId = statusId;
     }
 
@@ -136,7 +139,7 @@ public class JobRoleDetailsCSV {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -144,7 +147,7 @@ public class JobRoleDetailsCSV {
         return responsibilities;
     }
 
-    public void setResponsibilities(String responsibilities) {
+    public void setResponsibilities(final String responsibilities) {
         this.responsibilities = responsibilities;
     }
 
@@ -152,7 +155,7 @@ public class JobRoleDetailsCSV {
         return sharepointUrl;
     }
 
-    public void setSharepointUrl(String sharepointUrl) {
+    public void setSharepointUrl(final String sharepointUrl) {
         this.sharepointUrl = sharepointUrl;
     }
 
@@ -160,7 +163,7 @@ public class JobRoleDetailsCSV {
         return numberOfOpenPositions;
     }
 
-    public void setNumberOfOpenPositions(int numberOfOpenPositions) {
+    public void setNumberOfOpenPositions(final int numberOfOpenPositions) {
         this.numberOfOpenPositions = numberOfOpenPositions;
     }
 

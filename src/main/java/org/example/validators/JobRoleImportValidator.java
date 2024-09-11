@@ -4,7 +4,6 @@ import org.example.exceptions.Entity;
 import org.example.exceptions.FileNeededException;
 import org.example.exceptions.FileTooBigException;
 import org.example.exceptions.InvalidFileTypeException;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
