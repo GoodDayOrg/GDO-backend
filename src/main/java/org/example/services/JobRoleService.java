@@ -95,6 +95,9 @@ public class JobRoleService {
 
             String[] line;
             while ((line = csvReader.readNext()) != null) {
+                if (line.length == 0 || (line.length == 1 && line[0].trim().isEmpty())) {
+                    continue;
+                }
                 String roleName = line[0];
                 String location = line[1];
                 String capability = line[2];
