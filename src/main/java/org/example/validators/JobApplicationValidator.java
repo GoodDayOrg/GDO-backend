@@ -34,10 +34,10 @@ public class JobApplicationValidator {
         byte[] fileBytes = readInputStream(fileInputStream);
 
         if (fileBytes.length > MAX_FILE_SIZE_BYTES) {
-            throw new FileTooBigException();
+            throw new FileTooBigException(Entity.FILE);
         }
         if (fileBytes.length == 0) {
-            throw new FileNeededException();
+            throw new FileNeededException(Entity.FILE);
         }
         if (!jobRoleDao.existsOpenById(jobRoleId)) {
             throw new DoesNotExistException(Entity.JOB_ROLE);

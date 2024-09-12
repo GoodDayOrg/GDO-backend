@@ -1,9 +1,18 @@
 package org.example.services;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
@@ -13,14 +22,17 @@ import org.example.exceptions.Entity;
 import org.example.exceptions.FileNeededException;
 import org.example.exceptions.FileTooBigException;
 import org.example.exceptions.FileUploadException;
+import org.example.exceptions.InvalidFileTypeException;
 import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
 import org.example.models.JobRoleDetails;
+import org.example.models.JobRoleDetailsCSV;
 import org.example.models.JobRoleFilteredRequest;
 import org.example.models.JobRoleResponse;
 import org.example.validators.JobApplicationValidator;
+import org.example.validators.JobRoleImportValidator;
 
 public class JobRoleService {
 
@@ -74,6 +86,57 @@ public class JobRoleService {
             throw new DoesNotExistException(Entity.USER);
         }
         return jobRoleResponses;
+    }
+
+    public void getJobRolesFromCsv(final InputStream inputStream, final String fileName)
+            throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
+        List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
+
+        byte[] fileBytes = JobRoleImportValidator.readInputStream(inputStream);
+
+        JobRoleImportValidator.validateCsvFile(fileBytes, fileName);
+
+        try (InputStream byteArrayInputStream = new ByteArrayInputStream(fileBytes);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
+                CSVReader csvReader = new CSVReaderBuilder(reader)
+                        .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
+                        .build()) {
+
+            String[] line;
+            while ((line = csvReader.readNext()) != null) {
+                if (line.length == 0 || (line.length == 1 && line[0].trim().isEmpty())) {
+                    continue;
+                }
+                String roleName = line[0];
+                String location = line[1];
+                String capability = line[2];
+                String band = line[3];
+                Date closingDate = Date.valueOf(line[4]);
+                String description = line[5];
+                String responsibilities = line[6];
+                String sharepointUrl = line[7];
+                String statusName = line[8];
+                int openPositions = Integer.parseInt(line[9]);
+
+                JobRoleDetails jobRoleDetails = new JobRoleDetails(
+                        roleName,
+                        location,
+                        capability,
+                        band,
+                        closingDate,
+                        statusName,
+                        description,
+                        responsibilities,
+                        sharepointUrl,
+                        openPositions);
+
+                jobRoleDetailsList.add(JobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao));
+            }
+            jobRoleDao.importMultipleJobRoles(jobRoleDetailsList);
+
+        } catch (SQLException | CsvValidationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void applyForRole(final int jobRoleId, final String userEmail, final InputStream fileInputStream)

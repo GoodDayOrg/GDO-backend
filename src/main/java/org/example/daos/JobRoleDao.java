@@ -13,6 +13,7 @@ import org.example.exceptions.ResultSetException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
 import org.example.models.JobRoleDetails;
+import org.example.models.JobRoleDetailsCSV;
 import org.example.models.JobRoleFilteredRequest;
 
 public class JobRoleDao {
@@ -63,7 +64,6 @@ public class JobRoleDao {
                 PreparedStatement statement = connection.prepareStatement(query.toString())) {
 
             setParameters(statement, parameters);
-            System.out.println(statement);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -207,6 +207,90 @@ public class JobRoleDao {
         return null;
     }
 
+    public void importMultipleJobRoles(final List<JobRoleDetailsCSV> detailedJobRoles) throws SQLException {
+
+        String query = "INSERT INTO job_roles (roleName, location, capabilityId, bandId, closingDate, description, "
+                + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        try (Connection connection = DatabaseConnector.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            for (JobRoleDetailsCSV jobRole : detailedJobRoles) {
+                preparedStatement.setString(1, jobRole.getRoleName());
+                preparedStatement.setString(2, jobRole.getJobRoleLocation());
+                preparedStatement.setInt(3, jobRole.getCapabilityId());
+                preparedStatement.setInt(4, jobRole.getBandId());
+                preparedStatement.setDate(5, jobRole.getClosingDate());
+                preparedStatement.setString(6, jobRole.getDescription());
+                preparedStatement.setString(7, jobRole.getResponsibilities());
+                preparedStatement.setString(8, jobRole.getSharepointUrl());
+                preparedStatement.setInt(9, jobRole.getStatusId());
+                preparedStatement.setInt(10, jobRole.getNumberOfOpenPositions());
+
+                preparedStatement.addBatch();
+            }
+
+            preparedStatement.executeBatch();
+        }
+    }
+
+    public int getCapabilityIdByName(final String name) throws SQLException {
+
+        try (Connection connection = DatabaseConnector.getConnection()) {
+
+            String query = "SELECT capabilityId FROM capability WHERE capabilityName = ?;";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, name);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("capabilityId");
+                } else {
+                    throw new SQLException("No capability found with name: " + name);
+                }
+            }
+        }
+    }
+
+    public int getBandIdByName(final String name) throws SQLException {
+
+        try (Connection connection = DatabaseConnector.getConnection()) {
+
+            String query = "SELECT bandId FROM band WHERE bandName = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, name);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("bandId");
+                } else {
+                    throw new SQLException("No band found with name: " + name);
+                }
+            }
+        }
+    }
+
+    public int getStatusIdByName(final String name) throws SQLException {
+        try (Connection connection = DatabaseConnector.getConnection()) {
+
+            String query = "SELECT statusId FROM status WHERE statusName = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, name);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("statusId");
+                } else {
+                    throw new SQLException("No status found with name: " + name);
+                }
+            }
+        }
+    }
+
     public boolean existsOpenById(final int jobRoleId) throws SQLException {
         try (Connection connection = DatabaseConnector.getConnection()) {
 
@@ -232,7 +316,7 @@ public class JobRoleDao {
                     + "INNER JOIN job_roles jr ON ja.jobRoleId = jr.jobRoleId\n"
                     + "INNER JOIN User u ON ja.Email = u.Email\n"
                     + "WHERE u.Email = '" + email + "';";
-            System.out.println(query);
+
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
