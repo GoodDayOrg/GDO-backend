@@ -1,5 +1,9 @@
 package org.example.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.sql.SQLException;
 import org.example.daos.AuthDao;
 import org.example.exceptions.InvalidException;
 import org.example.models.LoginRequest;
@@ -8,9 +12,6 @@ import org.example.validators.AuthValidator;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mockito;
-import java.sql.SQLException;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class AuthServiceTest {
 
@@ -41,7 +42,7 @@ public class AuthServiceTest {
         String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
         LoginRequest loginRequest = new LoginRequest("email@example.com", plainPassword);
 
-        User user = new User("email@example.com", hashedPassword, 1);  // Użytkownik z zaszyfrowanym hasłem
+        User user = new User("email@example.com", hashedPassword, 1); // Użytkownik z zaszyfrowanym hasłem
 
         when(authDao.getUser(loginRequest)).thenReturn(user);
         when(authValidator.validateEmail(loginRequest.getEmail())).thenReturn(true);

@@ -1,10 +1,5 @@
 package org.example.daos;
 
-import org.example.exceptions.ResultSetException;
-import org.example.models.JobRole;
-import org.example.models.JobRoleDetails;
-import org.example.models.JobRoleApplication;
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -14,13 +9,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.example.exceptions.ResultSetException;
+import org.example.models.JobRole;
+import org.example.models.JobRoleApplication;
+import org.example.models.JobRoleDetails;
 import org.example.models.JobRoleFilteredRequest;
 
 public class JobRoleDao {
+
     public List<JobRole> getAllJobRoles() throws SQLException, ResultSetException {
         List<JobRole> jobRoles = new ArrayList<>();
 
         try (Connection connection = DatabaseConnector.getConnection()) {
+            assert connection != null;
             Statement statement = connection.createStatement();
 
             ResultSet resultSet = statement.executeQuery(baseQuery() + ";");
@@ -206,8 +207,20 @@ public class JobRoleDao {
         return null;
     }
 
-    public List<JobRoleApplication> getUserJobRoleApplications(final String email)
-            throws SQLException {
+    public boolean existsOpenById(final int jobRoleId) throws SQLException {
+        try (Connection connection = DatabaseConnector.getConnection()) {
+
+            String query = "SELECT * FROM job_roles WHERE jobRoleId = ? AND statusId = 1";
+            assert connection != null;
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, jobRoleId);
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next();
+        }
+    }
+
+    public List<JobRoleApplication> getUserJobRoleApplications(final String email) throws SQLException {
         List<JobRoleApplication> jobRoleApplications = new ArrayList<>();
 
         try (Connection connection = DatabaseConnector.getConnection()) {
@@ -220,21 +233,17 @@ public class JobRoleDao {
                     + "INNER JOIN User u ON ja.Email = u.Email\n"
                     + "WHERE u.Email = '" + email + "';";
             System.out.println(query);
-            ResultSet resultSet = statement.executeQuery(
-                    query
-            );
+            ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
                 JobRoleApplication jobRoleApplication = new JobRoleApplication(
                         resultSet.getInt("jobRoleId"),
                         resultSet.getString("roleName"),
-                        resultSet.getString("statusApplicationName")
-                );
+                        resultSet.getString("statusApplicationName"));
 
                 jobRoleApplications.add(jobRoleApplication);
             }
         }
         return jobRoleApplications;
-
     }
 }

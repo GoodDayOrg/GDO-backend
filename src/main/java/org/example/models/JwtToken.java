@@ -1,7 +1,7 @@
 package org.example.models;
 
-import javax.security.auth.Subject;
 import java.security.Principal;
+import javax.security.auth.Subject;
 
 public class JwtToken implements Principal {
 
@@ -9,8 +9,8 @@ public class JwtToken implements Principal {
     private String userEmail;
 
     public JwtToken(final UserRole userRole, final String userEmail) {
-        setUserEmail(userEmail);
         setUserRole(userRole);
+        setUserEmail(userEmail);
     }
 
     @Override
