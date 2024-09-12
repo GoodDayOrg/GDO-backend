@@ -80,7 +80,7 @@ public class JobApplicationValidatorTest {
                 DoesNotExistException.class,
                 () -> jobApplicationValidator.validateAndProduceByteArray(jobRoleId, userEmail, inputStream));
 
-        assertEquals("Job Role does not exist", exception.getMessage());
+        assertEquals("JobRole does not exist", exception.getMessage());
     }
 
     @Test

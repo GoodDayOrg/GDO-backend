@@ -49,13 +49,13 @@ class JobRoleServiceTest {
     JobApplicationValidator jobApplicationValidator = Mockito.mock(JobApplicationValidator.class);
     JobRoleService jobRoleService = new JobRoleService(jobRoleDao, jobApplicationDao, jobApplicationValidator);
 
+    @BeforeEach
+    public void jobRolesListClean() {
+        jobRoles = new ArrayList<>();
+    }
+
     @Nested
     class GetAllJobRolesTests {
-
-        @BeforeEach
-        public void jobRolesListClean() {
-            jobRoles = new ArrayList<>();
-        }
 
         @Test
         public void getAllJobRoles_shouldReturnListOfJobRolesResponse()
@@ -251,6 +251,7 @@ class JobRoleServiceTest {
     @Test
     public void getAllJobRoles_shouldReturnListOfJobRolesResponse()
             throws SQLException, ResultSetException, DoesNotExistException {
+
         jobRoles.add(
                 new JobRole(3, "test", "Belfast", "testCapability", "testBand", Date.valueOf("2000-10-10"), "open"));
         jobRoles.add(new JobRole(
