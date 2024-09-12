@@ -21,9 +21,6 @@ import java.util.stream.Collectors;
 import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.*;
-import org.example.mappers.JobRoleMapper;
-import org.example.models.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.example.exceptions.AlreadyExistsException;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
@@ -31,6 +28,8 @@ import org.example.exceptions.FileNeededException;
 import org.example.exceptions.FileTooBigException;
 import org.example.exceptions.FileUploadException;
 import org.example.exceptions.ResultSetException;
+import org.example.mappers.JobRoleMapper;
+import org.example.models.*;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
 import org.example.models.JobRoleDetails;
@@ -364,6 +363,7 @@ class JobRoleServiceTest {
         when(jobRoleDao.getUserJobRoleApplications(email)).thenReturn(Collections.emptyList());
         assertThrows(DoesNotExistException.class, () -> jobRoleService.getAllUserApplications(email));
     }
+
     @Test
     public void getJobRolesFromCsv_MapperShouldConvertFileToCSVModel()
             throws Exception, FileTooBigException, InvalidFileTypeException, FileNeededException {

@@ -61,7 +61,7 @@ public class JobRoleDao {
             final StringBuilder query, final List<Object> parameters, final List<JobRole> jobRoles)
             throws SQLException, ResultSetException {
         try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query.toString())) {
+                PreparedStatement statement = connection.prepareStatement(query.toString())) {
 
             setParameters(statement, parameters);
             ResultSet resultSet = statement.executeQuery();
@@ -213,7 +213,7 @@ public class JobRoleDao {
                 + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (JobRoleDetailsCSV jobRole : detailedJobRoles) {
                 preparedStatement.setString(1, jobRole.getRoleName());

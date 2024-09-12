@@ -1,25 +1,19 @@
 package org.example.services;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Date;
-
-import com.amazonaws.services.s3.model.ObjectMetadata;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.AlreadyExistsException;
@@ -27,11 +21,8 @@ import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.FileNeededException;
 import org.example.exceptions.FileTooBigException;
-
-import org.example.exceptions.InvalidFileTypeException;
-
 import org.example.exceptions.FileUploadException;
-
+import org.example.exceptions.InvalidFileTypeException;
 import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
 import org.example.models.JobRole;
@@ -97,7 +88,6 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
-
     public void getJobRolesFromCsv(final InputStream inputStream, final String fileName)
             throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
         List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
@@ -107,10 +97,10 @@ public class JobRoleService {
         JobRoleImportValidator.validateCsvFile(fileBytes, fileName);
 
         try (InputStream byteArrayInputStream = new ByteArrayInputStream(fileBytes);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
-             CSVReader csvReader = new CSVReaderBuilder(reader)
-                     .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
-                     .build()) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
+                CSVReader csvReader = new CSVReaderBuilder(reader)
+                        .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
+                        .build()) {
 
             String[] line;
             while ((line = csvReader.readNext()) != null) {
@@ -151,7 +141,7 @@ public class JobRoleService {
 
     public void applyForRole(final int jobRoleId, final String userEmail, final InputStream fileInputStream)
             throws DoesNotExistException, SQLException, FileTooBigException, AlreadyExistsException,
-            FileNeededException, IOException, FileUploadException {
+                    FileNeededException, IOException, FileUploadException {
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.addUserMetadata("jobRoleId", String.valueOf(jobRoleId));
