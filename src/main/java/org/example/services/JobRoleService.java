@@ -1,17 +1,18 @@
 package org.example.services;
 
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.exceptions.CsvValidationException;
 import org.example.daos.JobRoleDao;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
@@ -20,7 +21,6 @@ import org.example.exceptions.FileTooBigException;
 import org.example.exceptions.InvalidFileTypeException;
 import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
-import com.opencsv.CSVReader;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
 import org.example.models.JobRoleDetails;
@@ -38,13 +38,11 @@ public class JobRoleService {
         this.jobRoleDao = jobRoleDao;
     }
 
-    public List<JobRole> testConnection() throws SQLException,
-            ResultSetException {
+    public List<JobRole> testConnection() throws SQLException, ResultSetException {
         return jobRoleDao.getAllJobRoles();
     }
 
-    public List<JobRoleResponse> getAllJobRoles() throws SQLException,
-            DoesNotExistException, ResultSetException {
+    public List<JobRoleResponse> getAllJobRoles() throws SQLException, DoesNotExistException, ResultSetException {
         List<JobRoleResponse> jobRoleResponses = JobRoleMapper.toResponse(jobRoleDao.getAllJobRoles());
         if (jobRoleResponses.isEmpty()) {
             throw new DoesNotExistException(Entity.JOB_ROLE);
@@ -79,8 +77,8 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
-    public void getJobRolesFromCsv(final InputStream inputStream, final String fileName) throws IOException,
-            FileNeededException, FileTooBigException, InvalidFileTypeException {
+    public void getJobRolesFromCsv(final InputStream inputStream, final String fileName)
+            throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
         List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
 
         byte[] fileBytes = JobRoleImportValidator.readInputStream(inputStream);
@@ -88,10 +86,10 @@ public class JobRoleService {
         JobRoleImportValidator.validateCsvFile(fileBytes, fileName);
 
         try (InputStream byteArrayInputStream = new ByteArrayInputStream(fileBytes);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
-             CSVReader csvReader = new CSVReaderBuilder(reader)
-                     .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
-                     .build()) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
+                CSVReader csvReader = new CSVReaderBuilder(reader)
+                        .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
+                        .build()) {
 
             String[] line;
             while ((line = csvReader.readNext()) != null) {
@@ -110,12 +108,18 @@ public class JobRoleService {
                 int openPositions = Integer.parseInt(line[9]);
 
                 JobRoleDetails jobRoleDetails = new JobRoleDetails(
-                        roleName, location, capability, band, closingDate, statusName, description, responsibilities,
-                        sharepointUrl, openPositions
-                );
+                        roleName,
+                        location,
+                        capability,
+                        band,
+                        closingDate,
+                        statusName,
+                        description,
+                        responsibilities,
+                        sharepointUrl,
+                        openPositions);
 
-                jobRoleDetailsList.add(
-                        JobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao));
+                jobRoleDetailsList.add(JobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao));
             }
             jobRoleDao.importMultipleJobRoles(jobRoleDetailsList);
 

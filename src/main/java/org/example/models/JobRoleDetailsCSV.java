@@ -1,80 +1,52 @@
 package org.example.models;
 
 import io.swagger.annotations.ApiModelProperty;
-
 import java.sql.Date;
 import java.util.Objects;
 
 public class JobRoleDetailsCSV {
 
-    @ApiModelProperty(
-            value = "Job role's name",
-            required = true,
-            example = "Delivery manager")
+    @ApiModelProperty(value = "Job role's name", required = true, example = "Delivery manager")
     private String roleName;
 
-    @ApiModelProperty(
-            value = "Role's location, defined by ENUM value",
-            required = true,
-            example = "Gdansk")
+    @ApiModelProperty(value = "Role's location, defined by ENUM value", required = true, example = "Gdansk")
     private String jobRoleLocation;
 
-    @ApiModelProperty(
-            value = "Capability's id",
-            required = true,
-            example = "Digital Service")
+    @ApiModelProperty(value = "Capability's id", required = true, example = "Digital Service")
     private int capabilityId;
 
-    @ApiModelProperty(
-            value = "Band's id",
-            required = true,
-            example = "Trainee")
+    @ApiModelProperty(value = "Band's id", required = true, example = "Trainee")
     private int bandId;
 
-    @ApiModelProperty(
-            value = "Expire date of offer",
-            required = true,
-            example = "11/12/2024")
+    @ApiModelProperty(value = "Expire date of offer", required = true, example = "11/12/2024")
     private Date closingDate;
 
-    @ApiModelProperty(
-            value = "Open or Closed id",
-            required = true,
-            example = "open")
+    @ApiModelProperty(value = "Open or Closed id", required = true, example = "open")
     private int statusId;
 
-    @ApiModelProperty(
-            value = "Job role description",
-            required = true,
-            example = "Description"
-    )
+    @ApiModelProperty(value = "Job role description", required = true, example = "Description")
     private String description;
 
-    @ApiModelProperty(
-            value = "Job role responsibilities",
-            required = true,
-            example = "responsibilities"
-    )
+    @ApiModelProperty(value = "Job role responsibilities", required = true, example = "responsibilities")
     private String responsibilities;
 
-    @ApiModelProperty(
-            value = "https://url.com",
-            required = true,
-            example = "https://url.com"
-    )
+    @ApiModelProperty(value = "https://url.com", required = true, example = "https://url.com")
     private String sharepointUrl;
 
-    @ApiModelProperty(
-            value = "Number of open positions",
-            required = true,
-            example = "2"
-    )
+    @ApiModelProperty(value = "Number of open positions", required = true, example = "2")
     private int numberOfOpenPositions;
 
-    public JobRoleDetailsCSV(final String roleName, final String jobRoleLocation, final int capabilityId,
-                             final int bandId, final Date closingDate, final String description,
-                             final String responsibilities, final String sharepointUrl, final int statusId,
-                             final int numberOfOpenPositions) {
+    public JobRoleDetailsCSV(
+            final String roleName,
+            final String jobRoleLocation,
+            final int capabilityId,
+            final int bandId,
+            final Date closingDate,
+            final String description,
+            final String responsibilities,
+            final String sharepointUrl,
+            final int statusId,
+            final int numberOfOpenPositions) {
         this.roleName = roleName;
         this.jobRoleLocation = jobRoleLocation;
         this.capabilityId = capabilityId;
@@ -190,8 +162,15 @@ public class JobRoleDetailsCSV {
 
     @Override
     public int hashCode() {
-        return Objects.hash(roleName, jobRoleLocation, capabilityId, bandId,
-                closingDate, statusId, description, responsibilities,
+        return Objects.hash(
+                roleName,
+                jobRoleLocation,
+                capabilityId,
+                bandId,
+                closingDate,
+                statusId,
+                description,
+                responsibilities,
                 sharepointUrl,
                 numberOfOpenPositions);
     }

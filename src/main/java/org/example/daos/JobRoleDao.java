@@ -1,6 +1,5 @@
 package org.example.daos;
 
-import org.example.exceptions.ResultSetException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -10,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import org.example.exceptions.ResultSetException;
 import org.example.models.JobRole;
 import org.example.models.JobRoleApplication;
 import org.example.models.JobRoleDetails;
@@ -18,8 +17,7 @@ import org.example.models.JobRoleDetailsCSV;
 import org.example.models.JobRoleFilteredRequest;
 
 public class JobRoleDao {
-    public List<JobRole> getAllJobRoles()
-            throws SQLException, ResultSetException {
+    public List<JobRole> getAllJobRoles() throws SQLException, ResultSetException {
         List<JobRole> jobRoles = new ArrayList<>();
 
         try (Connection connection = DatabaseConnector.getConnection()) {
@@ -35,8 +33,7 @@ public class JobRoleDao {
         return jobRoles;
     }
 
-    public List<JobRole> getFilteredJobRoles(
-            final JobRoleFilteredRequest jobRequest)
+    public List<JobRole> getFilteredJobRoles(final JobRoleFilteredRequest jobRequest)
             throws SQLException, ResultSetException {
         List<JobRole> jobRoles = new ArrayList<>();
         StringBuilder query = new StringBuilder(baseQuery());
@@ -59,8 +56,7 @@ public class JobRoleDao {
     }
 
     private void executeFilteredJobQuery(
-            final StringBuilder query, final List<Object> parameters,
-            final List<JobRole> jobRoles)
+            final StringBuilder query, final List<Object> parameters, final List<JobRole> jobRoles)
             throws SQLException, ResultSetException {
         try (Connection connection = DatabaseConnector.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query.toString())) {
@@ -156,8 +152,7 @@ public class JobRoleDao {
         return list != null && !list.isEmpty();
     }
 
-    private void addJobRoleFromResultSet(final List<JobRole> jobRoles,
-                                         final ResultSet resultSet)
+    private void addJobRoleFromResultSet(final List<JobRole> jobRoles, final ResultSet resultSet)
             throws ResultSetException {
         JobRole jobRole;
         try {
@@ -179,15 +174,13 @@ public class JobRoleDao {
     public JobRoleDetails getJobRoleById(final int id) throws SQLException {
         try (Connection connection = DatabaseConnector.getConnection()) {
 
-            String query =
-                    "SELECT roleName, location, capabilityName, bandName, closingDate, statusName, "
-                            +
-                            "description, responsibilities, sharepointUrl, numberOfOpenPositions\n"
-                            + "FROM job_roles\n"
-                            + "INNER JOIN capability USING(capabilityId)\n"
-                            + "INNER JOIN band USING(bandId)\n"
-                            + "INNER JOIN status using(statusId)\n"
-                            + "WHERE jobRoleId = ?;";
+            String query = "SELECT roleName, location, capabilityName, bandName, closingDate, statusName, "
+                    + "description, responsibilities, sharepointUrl, numberOfOpenPositions\n"
+                    + "FROM job_roles\n"
+                    + "INNER JOIN capability USING(capabilityId)\n"
+                    + "INNER JOIN band USING(bandId)\n"
+                    + "INNER JOIN status using(statusId)\n"
+                    + "WHERE jobRoleId = ?;";
 
             PreparedStatement statement = connection.prepareStatement(query);
 
@@ -214,12 +207,11 @@ public class JobRoleDao {
 
     public void importMultipleJobRoles(final List<JobRoleDetailsCSV> detailedJobRoles) throws SQLException {
 
-
         String query = "INSERT INTO job_roles (roleName, location, capabilityId, bandId, closingDate, description, "
                 + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (JobRoleDetailsCSV jobRole : detailedJobRoles) {
                 preparedStatement.setString(1, jobRole.getRoleName());
@@ -239,7 +231,6 @@ public class JobRoleDao {
             preparedStatement.executeBatch();
         }
     }
-
 
     public int getCapabilityIdByName(final String name) throws SQLException {
 
@@ -261,14 +252,12 @@ public class JobRoleDao {
         }
     }
 
-
     public int getBandIdByName(final String name) throws SQLException {
-
 
         try (Connection connection = DatabaseConnector.getConnection()) {
 
             String query = "SELECT bandId FROM band WHERE bandName = ?;";
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, name);
 
@@ -282,12 +271,11 @@ public class JobRoleDao {
         }
     }
 
-
     public int getStatusIdByName(final String name) throws SQLException {
         try (Connection connection = DatabaseConnector.getConnection()) {
 
             String query = "SELECT statusId FROM status WHERE statusName = ?;";
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, name);
 
@@ -301,8 +289,7 @@ public class JobRoleDao {
         }
     }
 
-    public List<JobRoleApplication> getUserJobRoleApplications(final String email)
-            throws SQLException {
+    public List<JobRoleApplication> getUserJobRoleApplications(final String email) throws SQLException {
         List<JobRoleApplication> jobRoleApplications = new ArrayList<>();
 
         try (Connection connection = DatabaseConnector.getConnection()) {
@@ -320,13 +307,11 @@ public class JobRoleDao {
                 JobRoleApplication jobRoleApplication = new JobRoleApplication(
                         resultSet.getInt("jobRoleId"),
                         resultSet.getString("roleName"),
-                        resultSet.getString("statusApplicationName")
-                );
+                        resultSet.getString("statusApplicationName"));
 
                 jobRoleApplications.add(jobRoleApplication);
             }
         }
         return jobRoleApplications;
-
     }
 }

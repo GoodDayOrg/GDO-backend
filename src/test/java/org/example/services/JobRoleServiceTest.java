@@ -3,11 +3,8 @@ package org.example.services;
 import static org.example.utils.Utils.assertEqualLists;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,11 +16,7 @@ import org.example.daos.JobRoleDao;
 import org.example.exceptions.*;
 import org.example.mappers.JobRoleMapper;
 import org.example.models.*;
-import org.example.validators.JobRoleImportValidator;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -138,39 +131,42 @@ class JobRoleServiceTest {
     }
 
     @Test
-    public void getAllUserApplications_shouldReturnJobListForGivenUser()
-            throws SQLException, DoesNotExistException {
+    public void getAllUserApplications_shouldReturnJobListForGivenUser() throws SQLException, DoesNotExistException {
         String email = "admin";
 
         List<JobRoleApplication> expectedJobRoleApplications = new ArrayList<>();
-        expectedJobRoleApplications.add(
-                new JobRoleApplication(1, "Engineer", "hired")
-        );
-        expectedJobRoleApplications.add(
-                new JobRoleApplication(2, "Trainee", "rejected")
-        );
+        expectedJobRoleApplications.add(new JobRoleApplication(1, "Engineer", "hired"));
+        expectedJobRoleApplications.add(new JobRoleApplication(2, "Trainee", "rejected"));
 
         Mockito.when(jobRoleDao.getUserJobRoleApplications(email)).thenReturn(expectedJobRoleApplications);
 
         List<JobRoleApplication> resultJobRoleApplications = jobRoleService.getAllUserApplications(email);
         assertEqualLists(expectedJobRoleApplications, resultJobRoleApplications);
-     }
-
-    @Test
-    public void getAllUserApplication_shouldThrowExpection_whenListIsEmpty() throws DoesNotExistException, SQLException {
-        String email = "email";
-        when(jobRoleDao.getUserJobRoleApplications(email)).thenReturn(Collections.emptyList());
-        assertThrows(
-                DoesNotExistException.class, () -> jobRoleService.getAllUserApplications(email));
     }
 
     @Test
-    public void getJobRolesFromCsv_MapperShouldConvertFileToCSVModel() throws Exception, FileTooBigException, InvalidFileTypeException, FileNeededException {
+    public void getAllUserApplication_shouldThrowExpection_whenListIsEmpty()
+            throws DoesNotExistException, SQLException {
+        String email = "email";
+        when(jobRoleDao.getUserJobRoleApplications(email)).thenReturn(Collections.emptyList());
+        assertThrows(DoesNotExistException.class, () -> jobRoleService.getAllUserApplications(email));
+    }
+
+    @Test
+    public void getJobRolesFromCsv_MapperShouldConvertFileToCSVModel()
+            throws Exception, FileTooBigException, InvalidFileTypeException, FileNeededException {
 
         JobRoleDetails jobRoleDetails = new JobRoleDetails(
-                "RoleName", "Location", "Capability", "Band", Date.valueOf("2024-09-30"),
-                "StatusName", "Description", "Responsibilities", "SharepointUrl", 5
-        );
+                "RoleName",
+                "Location",
+                "Capability",
+                "Band",
+                Date.valueOf("2024-09-30"),
+                "StatusName",
+                "Description",
+                "Responsibilities",
+                "SharepointUrl",
+                5);
 
         when(jobRoleDao.getCapabilityIdByName("Capability")).thenReturn(1);
         when(jobRoleDao.getBandIdByName("Band")).thenReturn(1);
@@ -178,9 +174,17 @@ class JobRoleServiceTest {
 
         JobRoleDetailsCSV resultJobRoleDetailsCSV = JobRoleMapper.toJobRolesCSV(jobRoleDetails, jobRoleDao);
 
-        JobRoleDetailsCSV expectedJobRoleDetailsCSV = new JobRoleDetailsCSV("RoleName", "Location", 1,
-                1, Date.valueOf("2024-09-30"), "Description", "Responsibilities",
-                "SharepointUrl", 1, 5);
+        JobRoleDetailsCSV expectedJobRoleDetailsCSV = new JobRoleDetailsCSV(
+                "RoleName",
+                "Location",
+                1,
+                1,
+                Date.valueOf("2024-09-30"),
+                "Description",
+                "Responsibilities",
+                "SharepointUrl",
+                1,
+                5);
 
         assertEquals(expectedJobRoleDetailsCSV, resultJobRoleDetailsCSV);
     }
