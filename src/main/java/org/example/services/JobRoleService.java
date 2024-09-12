@@ -4,21 +4,34 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Date;
+
+import com.amazonaws.services.s3.model.ObjectMetadata;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
+import org.example.exceptions.AlreadyExistsException;
 import org.example.exceptions.DoesNotExistException;
 import org.example.exceptions.Entity;
 import org.example.exceptions.FileNeededException;
 import org.example.exceptions.FileTooBigException;
+
 import org.example.exceptions.InvalidFileTypeException;
+
+import org.example.exceptions.FileUploadException;
+
 import org.example.exceptions.ResultSetException;
 import org.example.mappers.JobRoleMapper;
 import org.example.models.JobRole;
@@ -27,15 +40,22 @@ import org.example.models.JobRoleDetails;
 import org.example.models.JobRoleDetailsCSV;
 import org.example.models.JobRoleFilteredRequest;
 import org.example.models.JobRoleResponse;
+import org.example.validators.JobApplicationValidator;
 import org.example.validators.JobRoleImportValidator;
 
 public class JobRoleService {
 
-    JobRoleDao jobRoleDao;
-    JobRoleMapper jobRoleMapper;
+    private final JobRoleDao jobRoleDao;
+    private final JobApplicationDao jobApplicationDao;
+    private final JobApplicationValidator jobApplicationValidator;
 
-    public JobRoleService(final JobRoleDao jobRoleDao) {
+    public JobRoleService(
+            final JobRoleDao jobRoleDao,
+            final JobApplicationDao jobApplicationDao,
+            final JobApplicationValidator jobApplicationValidator) {
         this.jobRoleDao = jobRoleDao;
+        this.jobApplicationDao = jobApplicationDao;
+        this.jobApplicationValidator = jobApplicationValidator;
     }
 
     public List<JobRole> testConnection() throws SQLException, ResultSetException {
@@ -62,7 +82,7 @@ public class JobRoleService {
             throws SQLException, DoesNotExistException {
         List<JobRoleApplication> jobRoleApplications = jobRoleDao.getUserJobRoleApplications(email);
         if (jobRoleApplications.isEmpty()) {
-            throw new DoesNotExistException(Entity.APPLICATION);
+            throw new DoesNotExistException(Entity.JOB_APPLICATION);
         }
         return jobRoleApplications;
     }
@@ -77,6 +97,7 @@ public class JobRoleService {
         return jobRoleResponses;
     }
 
+
     public void getJobRolesFromCsv(final InputStream inputStream, final String fileName)
             throws IOException, FileNeededException, FileTooBigException, InvalidFileTypeException {
         List<JobRoleDetailsCSV> jobRoleDetailsList = new ArrayList<>();
@@ -86,10 +107,10 @@ public class JobRoleService {
         JobRoleImportValidator.validateCsvFile(fileBytes, fileName);
 
         try (InputStream byteArrayInputStream = new ByteArrayInputStream(fileBytes);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
-                CSVReader csvReader = new CSVReaderBuilder(reader)
-                        .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
-                        .build()) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
+             CSVReader csvReader = new CSVReaderBuilder(reader)
+                     .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
+                     .build()) {
 
             String[] line;
             while ((line = csvReader.readNext()) != null) {
@@ -126,5 +147,19 @@ public class JobRoleService {
         } catch (SQLException | CsvValidationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void applyForRole(final int jobRoleId, final String userEmail, final InputStream fileInputStream)
+            throws DoesNotExistException, SQLException, FileTooBigException, AlreadyExistsException,
+            FileNeededException, IOException, FileUploadException {
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.addUserMetadata("jobRoleId", String.valueOf(jobRoleId));
+        metadata.addUserMetadata("userEmail", userEmail);
+        metadata.setContentType("application/pdf");
+
+        byte[] fileBytes = jobApplicationValidator.validateAndProduceByteArray(jobRoleId, userEmail, fileInputStream);
+        metadata.setContentLength(fileBytes.length);
+        jobApplicationDao.applyForRole(jobRoleId, userEmail, fileBytes, metadata);
     }
 }

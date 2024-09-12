@@ -1,7 +1,8 @@
 package org.example.validators;
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class AuthValidatorTest {
     private AuthValidator authValidator = new AuthValidator();

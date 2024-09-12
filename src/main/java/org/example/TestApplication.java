@@ -14,12 +14,14 @@ import org.example.auth.RoleAuthorizer;
 import org.example.controllers.AuthController;
 import org.example.controllers.JobRoleController;
 import org.example.daos.AuthDao;
+import org.example.daos.JobApplicationDao;
 import org.example.daos.JobRoleDao;
 import org.example.models.JwtToken;
 import org.example.services.AuthService;
 import org.example.services.JobRoleService;
 import org.example.utils.JwtUtils;
 import org.example.validators.AuthValidator;
+import org.example.validators.JobApplicationValidator;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
@@ -60,7 +62,13 @@ public class TestApplication extends Application<TestConfiguration> {
 
         environment.jersey().register(new AuthController(new AuthService(new AuthDao(), new AuthValidator())));
 
-        environment.jersey().register(new JobRoleController(new JobRoleService(new JobRoleDao())));
+        JobRoleDao jobRoleDao = new JobRoleDao();
+        JobApplicationDao jobApplicationDao = new JobApplicationDao();
+        JobApplicationValidator jobApplicationValidator = new JobApplicationValidator(jobRoleDao, jobApplicationDao);
+        environment
+                .jersey()
+                .register(new JobRoleController(
+                        new JobRoleService(jobRoleDao, jobApplicationDao, jobApplicationValidator)));
         environment.jersey().register(MultiPartFeature.class);
     }
 }

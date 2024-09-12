@@ -4,11 +4,10 @@ import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.example.models.JwtToken;
-import org.example.models.UserRole;
-
 import java.security.Key;
 import java.util.Optional;
+import org.example.models.JwtToken;
+import org.example.models.UserRole;
 
 public class JwtAuthenticator implements Authenticator<String, JwtToken> {
     private final Key key;
@@ -22,8 +21,7 @@ public class JwtAuthenticator implements Authenticator<String, JwtToken> {
     }
 
     @Override
-    public Optional<JwtToken> authenticate(final String token)
-            throws AuthenticationException {
+    public Optional<JwtToken> authenticate(final String token) throws AuthenticationException {
         try {
             Claims claims = Jwts.parser()
                     .setSigningKey(key)

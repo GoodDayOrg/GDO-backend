@@ -1,5 +1,6 @@
 package org.example.services;
 
+import java.sql.SQLException;
 import org.example.daos.AuthDao;
 import org.example.exceptions.Entity;
 import org.example.exceptions.InvalidException;
@@ -8,7 +9,6 @@ import org.example.models.User;
 import org.example.utils.JwtUtils;
 import org.example.validators.AuthValidator;
 import org.mindrot.jbcrypt.BCrypt;
-import java.sql.SQLException;
 
 public class AuthService {
 
@@ -21,8 +21,7 @@ public class AuthService {
         this.authValidator = authValidator;
     }
 
-    public String login(final LoginRequest loginRequest)
-            throws SQLException, InvalidException {
+    public String login(final LoginRequest loginRequest) throws SQLException, InvalidException {
         if (!authValidator.validateEmail(loginRequest.getEmail())) {
             throw new InvalidException(Entity.USER, "Invalid email");
         }

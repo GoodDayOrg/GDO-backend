@@ -17,10 +17,12 @@ import org.example.models.JobRoleDetailsCSV;
 import org.example.models.JobRoleFilteredRequest;
 
 public class JobRoleDao {
+
     public List<JobRole> getAllJobRoles() throws SQLException, ResultSetException {
         List<JobRole> jobRoles = new ArrayList<>();
 
         try (Connection connection = DatabaseConnector.getConnection()) {
+            assert connection != null;
             Statement statement = connection.createStatement();
 
             ResultSet resultSet = statement.executeQuery(baseQuery() + ";");
@@ -59,7 +61,7 @@ public class JobRoleDao {
             final StringBuilder query, final List<Object> parameters, final List<JobRole> jobRoles)
             throws SQLException, ResultSetException {
         try (Connection connection = DatabaseConnector.getConnection();
-                PreparedStatement statement = connection.prepareStatement(query.toString())) {
+             PreparedStatement statement = connection.prepareStatement(query.toString())) {
 
             setParameters(statement, parameters);
             ResultSet resultSet = statement.executeQuery();
@@ -211,7 +213,7 @@ public class JobRoleDao {
                 + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (Connection connection = DatabaseConnector.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (JobRoleDetailsCSV jobRole : detailedJobRoles) {
                 preparedStatement.setString(1, jobRole.getRoleName());
@@ -289,6 +291,19 @@ public class JobRoleDao {
         }
     }
 
+    public boolean existsOpenById(final int jobRoleId) throws SQLException {
+        try (Connection connection = DatabaseConnector.getConnection()) {
+
+            String query = "SELECT * FROM job_roles WHERE jobRoleId = ? AND statusId = 1";
+            assert connection != null;
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, jobRoleId);
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next();
+        }
+    }
+
     public List<JobRoleApplication> getUserJobRoleApplications(final String email) throws SQLException {
         List<JobRoleApplication> jobRoleApplications = new ArrayList<>();
 
@@ -301,6 +316,7 @@ public class JobRoleDao {
                     + "INNER JOIN job_roles jr ON ja.jobRoleId = jr.jobRoleId\n"
                     + "INNER JOIN User u ON ja.Email = u.Email\n"
                     + "WHERE u.Email = '" + email + "';";
+
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {

@@ -1,7 +1,15 @@
 package org.example.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import java.sql.SQLException;
+import javax.crypto.SecretKey;
 import org.example.daos.AuthDao;
 import org.example.exceptions.InvalidException;
 import org.example.models.LoginRequest;
@@ -15,33 +23,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.crypto.SecretKey;
-import java.sql.SQLException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {
     private final String email = "admin@example.com";
     private final String plainTextPassword = "admin";
+
     @Mock
     private AuthDao authDao;
+
     @Mock
     private AuthValidator authValidator;
+
     @InjectMocks
     private AuthService authservice;
-    private final AuthController authController =
-            new AuthController(authservice);
+
+    private final AuthController authController = new AuthController(authservice);
     private User testUser;
-    private LoginRequest loginRequest =
-            new LoginRequest(email, plainTextPassword);
+    private LoginRequest loginRequest = new LoginRequest(email, plainTextPassword);
     private String hashedPassword;
     private SecretKey secretKey;
 
@@ -53,10 +53,8 @@ public class AuthControllerTest {
         secretKey = JwtUtils.getSecretKey();
     }
 
-
     @Test
-    void authenticate_ShouldReturnValidJwtToken_WhenCredentialsAreValid()
-            throws SQLException, InvalidException {
+    void authenticate_ShouldReturnValidJwtToken_WhenCredentialsAreValid() throws SQLException, InvalidException {
         // Arrange
         when(authDao.getUser(loginRequest)).thenReturn(testUser);
         when(authValidator.validateEmail(email)).thenReturn(true);
@@ -79,6 +77,4 @@ public class AuthControllerTest {
         assertTrue(claims.containsKey("email")); // Verify the email claim
         assertEquals(email, claims.get("email")); // Verify the email value
     }
-
-
 }

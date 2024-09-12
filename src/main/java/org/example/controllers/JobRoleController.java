@@ -4,6 +4,7 @@ import static org.example.utils.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.example.utils.HttpStatus.NOT_FOUND;
 import static org.example.utils.HttpStatus.OK;
 
+import com.amazonaws.SdkClientException;
 import io.dropwizard.auth.Auth;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +42,20 @@ import org.example.models.JwtToken;
 import org.example.models.UserRole;
 import org.example.services.JobRoleService;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.example.exceptions.AlreadyExistsException;
+import org.example.exceptions.DoesNotExistException;
+import org.example.exceptions.FileNeededException;
+import org.example.exceptions.FileTooBigException;
+import org.example.exceptions.FileUploadException;
+import org.example.exceptions.ResultSetException;
+import org.example.models.JobRole;
+import org.example.models.JobRoleApplication;
+import org.example.models.JobRoleFilteredRequest;
+import org.example.models.JobRoleResponse;
+import org.example.models.JwtToken;
+import org.example.models.RoleApplicationResponse;
+import org.example.models.UserRole;
+import org.example.services.JobRoleService;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Api("Job Role API")
@@ -145,6 +160,54 @@ public class JobRoleController {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(e.getMessage())
                     .build();
+        }
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @RolesAllowed({UserRole.ADMIN, UserRole.USER})
+    @ApiOperation(
+            value = "Sends CV pdf to S3 bucket and saves application information in the database",
+            authorizations = @Authorization(value = HttpHeaders.AUTHORIZATION),
+            response = RoleApplicationResponse.class,
+            produces = "application/json")
+    @Path("/{jobRoleId}/applications")
+    public Response applyForRole(
+            @PathParam("jobRoleId") final int jobRoleId,
+            @FormDataParam("file") final InputStream fileInputStream,
+            @ApiParam(hidden = true) @Auth final JwtToken token) {
+        String userEmail = token.getUserEmail();
+
+        try {
+            LOGGER.info("Job Application Request Received");
+            jobRoleService.applyForRole(jobRoleId, userEmail, fileInputStream);
+            return Response.ok()
+                    .entity(new RoleApplicationResponse("File uploaded successfully"))
+                    .build();
+        } catch (DoesNotExistException e) {
+            LOGGER.error("applyForRole failed, role does not exist\n{}", e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (FileTooBigException e) {
+            LOGGER.error("applyForRole failed, file exceeds maximum size\n{}", e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (AlreadyExistsException e) {
+            LOGGER.error("applyForRole failed, application for this this role already exists\n{}", e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (FileNeededException e) {
+            LOGGER.error("applyForRole failed, CV file is empty\n{}", e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (SQLException | IOException | FileUploadException | SdkClientException e) {
+            LOGGER.error("applyForRole failed\n{}", e.getMessage());
+            return Response.serverError().build();
         }
     }
 
