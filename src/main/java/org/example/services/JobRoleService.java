@@ -34,9 +34,8 @@ public class JobRoleService {
     JobRoleDao jobRoleDao;
     JobRoleMapper jobRoleMapper;
 
-    public JobRoleService(final JobRoleDao jobRoleDao, final JobRoleMapper jobRoleMapper) {
+    public JobRoleService(final JobRoleDao jobRoleDao) {
         this.jobRoleDao = jobRoleDao;
-        this.jobRoleMapper = jobRoleMapper;
     }
 
     public List<JobRole> testConnection() throws SQLException,

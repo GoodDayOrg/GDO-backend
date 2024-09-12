@@ -9,9 +9,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class JobRoleImportValidator {
+public final class JobRoleImportValidator {
     public static final long MAX_FILE_SIZE_MB = 5L;
     public static final long MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+    private static final int BUFFER_SIZE = 4096;
+
+
+    private JobRoleImportValidator() {
+    }
 
     public static void validateCsvFile(final byte[] fileBytes, final String fileDetails)
             throws FileNeededException, FileTooBigException, InvalidFileTypeException {
@@ -29,7 +34,8 @@ public class JobRoleImportValidator {
 
     public static byte[] readInputStream(final InputStream inputStream) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        byte[] data = new byte[4096];
+        byte[] data = new byte[BUFFER_SIZE];
+
 
         int bytesRead;
         while ((bytesRead = inputStream.read(data, 0, data.length)) != -1) {

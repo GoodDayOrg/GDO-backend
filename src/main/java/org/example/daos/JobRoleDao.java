@@ -213,6 +213,8 @@ public class JobRoleDao {
     }
 
     public void importMultipleJobRoles(final List<JobRoleDetailsCSV> detailedJobRoles) throws SQLException {
+
+
         String query = "INSERT INTO job_roles (roleName, location, capabilityId, bandId, closingDate, description, "
                 + "responsibilities, sharepointUrl, statusId, numberOfOpenPositions) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";

@@ -7,4 +7,8 @@
 <suppressions>
     <suppress checks="ParameterNumber"
               files="org.example.models.JobRoleDetails"/>
+    <suppress checks="MagicNumber"
+              files="org.example.daos.JobRoleDao"/>
+    <suppress checks="MagicNumber"
+              files="org.example.services.JobRoleService"/>
 </suppressions>

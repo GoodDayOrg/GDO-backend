@@ -12,6 +12,8 @@ import java.util.List;
 
 public final class JobRoleMapper {
 
+    private JobRoleMapper() {
+    }
 
     public static List<JobRoleResponse> toResponse(final List<JobRole> jobRoles) {
         List<JobRoleResponse> jobRoleResponses = new ArrayList<>();

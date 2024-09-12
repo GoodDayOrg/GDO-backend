@@ -29,9 +29,8 @@ import org.mockito.Mockito;
 
 class JobRoleServiceTest {
     List<JobRole> jobRoles;
-    JobRoleMapper jobRoleMapper;
     JobRoleDao jobRoleDao = Mockito.mock(JobRoleDao.class);
-    JobRoleService jobRoleService = new JobRoleService(jobRoleDao, jobRoleMapper);
+    JobRoleService jobRoleService = new JobRoleService(jobRoleDao);
 
     @BeforeEach
     public void jobRolesListClean() {
