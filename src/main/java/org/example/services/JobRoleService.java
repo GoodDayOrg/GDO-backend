@@ -72,9 +72,6 @@ public class JobRoleService {
     public List<JobRoleApplication> getAllUserApplications(final String email)
             throws SQLException, DoesNotExistException {
         List<JobRoleApplication> jobRoleApplications = jobRoleDao.getUserJobRoleApplications(email);
-        if (jobRoleApplications.isEmpty()) {
-            throw new DoesNotExistException(Entity.JOB_APPLICATION);
-        }
         return jobRoleApplications;
     }
 
