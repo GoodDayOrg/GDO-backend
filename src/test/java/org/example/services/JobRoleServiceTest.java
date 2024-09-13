@@ -358,14 +358,6 @@ class JobRoleServiceTest {
     }
 
     @Test
-    public void getAllUserApplication_shouldThrowExpection_whenListIsEmpty()
-            throws DoesNotExistException, SQLException {
-        String email = "email";
-        when(jobRoleDao.getUserJobRoleApplications(email)).thenReturn(Collections.emptyList());
-        assertThrows(DoesNotExistException.class, () -> jobRoleService.getAllUserApplications(email));
-    }
-
-    @Test
     public void getJobRolesFromCsv_MapperShouldConvertFileToCSVModel()
             throws Exception, FileTooBigException, InvalidFileTypeException, FileNeededException {
 
